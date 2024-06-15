@@ -57,6 +57,13 @@ const WebcamCapture = () => {
   const [audioSrc, setAudioSrc] = useState(null);
   let counterNo = 0;
   const capture = useCallback(async () => {
+    const tokenResp = await fetch(
+      "https://backend-xisces6vkq-uc.a.run.app/auth-token",
+      {
+        method: "GET",
+      }
+    );
+    const token = await tokenResp.json();
     const imageSrc = webcamRef.current.getScreenshot();
     if (imageSrc) {
       try {
@@ -66,7 +73,7 @@ const WebcamCapture = () => {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ya29.c.c0AY_VpZhxqsrg4RvgmF1XM2DsuAgaK1Vcsewk9Asj0Okxghg6fhJOFc7gEAlarZ5xA55p5hhMyCO_41Am5gstXMFL2BfffFcPew9PG7VCWEUq5N-2UPLxksUSiOhTVd_hEYZZyVUpOH-XO5ZrlPkFTZu8JscQBYVnxIdo2c6kb-Do4H2Jtz3Ypd9PPIJcNvTnhGHh1NiuSy7Eozc0u7VitrntXYxtN8HkmlpO3jeSgVWScjI1mHaEXE9lngUil8bP5ZOOQ7mvoVQH-Wg1iUmNWSoJ2ShLkhIasKufnl3dcqDQq_dOIGCLx-wKgTKNuwvJFOiP1sxOU9EeobuKt4xFb8tMgc7kki_ZesKzaD-ISNIss6UlfGJA2-SuWO42m0WvJ67UXA8H400PqmSyZz8y2345OgeZM5YnZQiiFYIg_8rR10k4hVRUs8ZjqOj0dws5b34e_Mux_8rUXMe--QkcMiY07d6wI0bRYuya0o1QrQyw_4sdXtuOyRShp5gpzQYb23andjdvtsZXl-mnXrh-aedIWQV9MSJiS_zhmf8ipYhseyFuQqIFO9qFhz6Fm_FFawyVaJRl84WWIov6mQsUouMkbX6a6ymewM0MbIjnUecyRevfj7JJeclMaUqhxbvk7VOarOQzXOWvlaWfjqbsr1rcZq3Jf-Mbei6Q9YR5n6g7z00R245c5vSlIVQOXQwkYRu9g9nIn_0Rq9mI9ZFqzJgyVlhjIqjvUWxwQaho8d2qhQ2qWte23S_MRdboopupIXi5aWW45MmgWmYXd1xzXU94yre4QRqBlkO4tkaFX-lpq6lRRjuJSggubIOhsi_BUa4pSli0BOWos31q5jtXMYqctruMw5XJUB-u9Ztwv2vXl1vZ_grIo3-24-9tgcMxmxrYlUSflWgb90u4U5gUa04FSdx-Rsczv8b8eSj25vfYBdv0_Yt1UfamdVW-rwefzkcooyJ_fFOyoI7_rklWjwgjs_1xrblY--izQorBbcrlvkRlru83p49`,
+              Authorization: `Bearer ${token}`,
             },
 
             body: JSON.stringify({
@@ -122,8 +129,7 @@ const WebcamCapture = () => {
             {
               method: "POST",
               headers: {
-                Authorization:
-                  "Bearer ya29.c.c0AY_VpZhxqsrg4RvgmF1XM2DsuAgaK1Vcsewk9Asj0Okxghg6fhJOFc7gEAlarZ5xA55p5hhMyCO_41Am5gstXMFL2BfffFcPew9PG7VCWEUq5N-2UPLxksUSiOhTVd_hEYZZyVUpOH-XO5ZrlPkFTZu8JscQBYVnxIdo2c6kb-Do4H2Jtz3Ypd9PPIJcNvTnhGHh1NiuSy7Eozc0u7VitrntXYxtN8HkmlpO3jeSgVWScjI1mHaEXE9lngUil8bP5ZOOQ7mvoVQH-Wg1iUmNWSoJ2ShLkhIasKufnl3dcqDQq_dOIGCLx-wKgTKNuwvJFOiP1sxOU9EeobuKt4xFb8tMgc7kki_ZesKzaD-ISNIss6UlfGJA2-SuWO42m0WvJ67UXA8H400PqmSyZz8y2345OgeZM5YnZQiiFYIg_8rR10k4hVRUs8ZjqOj0dws5b34e_Mux_8rUXMe--QkcMiY07d6wI0bRYuya0o1QrQyw_4sdXtuOyRShp5gpzQYb23andjdvtsZXl-mnXrh-aedIWQV9MSJiS_zhmf8ipYhseyFuQqIFO9qFhz6Fm_FFawyVaJRl84WWIov6mQsUouMkbX6a6ymewM0MbIjnUecyRevfj7JJeclMaUqhxbvk7VOarOQzXOWvlaWfjqbsr1rcZq3Jf-Mbei6Q9YR5n6g7z00R245c5vSlIVQOXQwkYRu9g9nIn_0Rq9mI9ZFqzJgyVlhjIqjvUWxwQaho8d2qhQ2qWte23S_MRdboopupIXi5aWW45MmgWmYXd1xzXU94yre4QRqBlkO4tkaFX-lpq6lRRjuJSggubIOhsi_BUa4pSli0BOWos31q5jtXMYqctruMw5XJUB-u9Ztwv2vXl1vZ_grIo3-24-9tgcMxmxrYlUSflWgb90u4U5gUa04FSdx-Rsczv8b8eSj25vfYBdv0_Yt1UfamdVW-rwefzkcooyJ_fFOyoI7_rklWjwgjs_1xrblY--izQorBbcrlvkRlru83p49",
+                Authorization: `Bearer ${token}`,
                 "x-goog-user-project": "streamingai-33a74",
                 "Content-Type": "application/json; charset=utf-8",
               },
@@ -175,8 +181,7 @@ const WebcamCapture = () => {
             {
               method: "POST",
               headers: {
-                Authorization:
-                  "Bearer ya29.c.c0AY_VpZhxqsrg4RvgmF1XM2DsuAgaK1Vcsewk9Asj0Okxghg6fhJOFc7gEAlarZ5xA55p5hhMyCO_41Am5gstXMFL2BfffFcPew9PG7VCWEUq5N-2UPLxksUSiOhTVd_hEYZZyVUpOH-XO5ZrlPkFTZu8JscQBYVnxIdo2c6kb-Do4H2Jtz3Ypd9PPIJcNvTnhGHh1NiuSy7Eozc0u7VitrntXYxtN8HkmlpO3jeSgVWScjI1mHaEXE9lngUil8bP5ZOOQ7mvoVQH-Wg1iUmNWSoJ2ShLkhIasKufnl3dcqDQq_dOIGCLx-wKgTKNuwvJFOiP1sxOU9EeobuKt4xFb8tMgc7kki_ZesKzaD-ISNIss6UlfGJA2-SuWO42m0WvJ67UXA8H400PqmSyZz8y2345OgeZM5YnZQiiFYIg_8rR10k4hVRUs8ZjqOj0dws5b34e_Mux_8rUXMe--QkcMiY07d6wI0bRYuya0o1QrQyw_4sdXtuOyRShp5gpzQYb23andjdvtsZXl-mnXrh-aedIWQV9MSJiS_zhmf8ipYhseyFuQqIFO9qFhz6Fm_FFawyVaJRl84WWIov6mQsUouMkbX6a6ymewM0MbIjnUecyRevfj7JJeclMaUqhxbvk7VOarOQzXOWvlaWfjqbsr1rcZq3Jf-Mbei6Q9YR5n6g7z00R245c5vSlIVQOXQwkYRu9g9nIn_0Rq9mI9ZFqzJgyVlhjIqjvUWxwQaho8d2qhQ2qWte23S_MRdboopupIXi5aWW45MmgWmYXd1xzXU94yre4QRqBlkO4tkaFX-lpq6lRRjuJSggubIOhsi_BUa4pSli0BOWos31q5jtXMYqctruMw5XJUB-u9Ztwv2vXl1vZ_grIo3-24-9tgcMxmxrYlUSflWgb90u4U5gUa04FSdx-Rsczv8b8eSj25vfYBdv0_Yt1UfamdVW-rwefzkcooyJ_fFOyoI7_rklWjwgjs_1xrblY--izQorBbcrlvkRlru83p49",
+                Authorization: `Bearer ${token}`,
                 "x-goog-user-project": "streamingai-33a74",
                 "Content-Type": "application/json; charset=utf-8",
               },
