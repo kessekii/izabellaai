@@ -2,6 +2,7 @@
 import React, { useRef, useCallback, useEffect, useState } from "react";
 import Webcam from "react-webcam";
 import { checkActionByTheme } from "./checkActionByTheme.ts";
+import { voiceRecognition } from "./VoiceCommandService";
 export const phraseDataBase = {
   "en-EN": {
     voice: "en-GB-Wavenet-D",
@@ -70,6 +71,7 @@ export const phraseDataBase = {
 const WebcamCapture = () => {
   const webcamRef = useRef(null);
   const [answer, setAnswer] = useState("no");
+  const [voiceCommandActive, setVoiceCommandActive] = useState("voice command not active");
   const [language, setLanguage] = useState("en-EN");
   const [audioSrc, setAudioSrc] = useState(null);
   let counterNo = 0;
@@ -85,16 +87,16 @@ const WebcamCapture = () => {
     const imageSrc = webcamRef.current.getScreenshot();
     if (imageSrc) {
       try {
-        await checkActionByTheme(
-          imageSrc,
-          token,
-          setAudioSrc,
-          setAnswer,
-          language,
-          counterNo,
-          "water",
-          true
-        );
+        // await checkActionByTheme(
+        //   imageSrc,
+        //   token,
+        //   setAudioSrc,
+        //   setAnswer,
+        //   language,
+        //   counterNo,
+        //   "water",
+        //   true
+        // );
       } catch (error) {
         console.error("There was a problem with the fetch operation:", error);
       }
@@ -130,6 +132,8 @@ const WebcamCapture = () => {
       >
         {language}
       </text>
+      <button onClick={() => voiceRecognition(setVoiceCommandActive, language)}>Voice Commands</button>
+      <text>{voiceCommandActive}</text>
     </div>
   );
 };
