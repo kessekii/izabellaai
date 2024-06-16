@@ -22,7 +22,7 @@ export async function checkActionByTheme(
           },
         ],
         parameters: {
-          sampleCount: 1,
+          sampleCount: 2,
           language: language,
         },
       }),

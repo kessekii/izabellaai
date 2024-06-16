@@ -3,6 +3,16 @@ import React, { useRef, useCallback, useEffect, useState } from "react";
 import Webcam from "react-webcam";
 import { checkActionByTheme } from "../actions/checkActionByTheme.js";
 import Button from "@mui/material/Button";
+const onSubmit = async () => {
+  await fetch("https://izabellaaibackend-xisces6vkq-lm.a.run.app/email", {
+    method: "POST",
+    body: JSON.stringify({
+      message: "A person drank water!",
+      subject: "Notification about water",
+      to: "mediavisionport@gmail.com",
+    }),
+  });
+};
 const WebcamCapture = () => {
   const webcamRef = useRef(null);
   const [running, setRunning] = useState(true);
@@ -13,7 +23,7 @@ const WebcamCapture = () => {
   const [counter, setCounter] = useState({ water: 0, agitation: 0 });
   const capture = useCallback(async () => {
     const tokenResp = await fetch(
-      "https://backend-xisces6vkq-uc.a.run.app/auth-token",
+      "https://izabellaaibackend-xisces6vkq-lm.a.run.app/auth-token",
       {
         method: "GET",
       }
@@ -31,7 +41,9 @@ const WebcamCapture = () => {
           language,
           counter,
         };
-
+        if (counter.water === 2) {
+          await onSubmit();
+        }
         await checkActionByTheme(props, {
           theme: "water",
           isNoUsed: true,
