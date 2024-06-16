@@ -36,6 +36,7 @@ const WebcamCapture = () => {
           maxCounter: 3,
         });
         const randomIndex = Math.floor(Math.random() * 3); // 0, 1, 2
+
         switch (randomIndex) {
           case 0:
             await checkActionByTheme(props, {
