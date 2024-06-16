@@ -1,7 +1,7 @@
 // src/WebcamCapture.js
 import React, { useRef, useCallback, useEffect, useState } from "react";
 import Webcam from "react-webcam";
-import { checkActionByTheme } from "./actions/checkActionByTheme.js";
+import { checkActionByTheme } from "../actions/checkActionByTheme.js";
 import Button from "@mui/material/Button";
 const WebcamCapture = () => {
   const webcamRef = useRef(null);
@@ -38,6 +38,11 @@ const WebcamCapture = () => {
 
         await checkActionByTheme(props, {
           theme: "agitation",
+          isNoUsed: false,
+          isCountered: false,
+        });
+        await checkActionByTheme(props, {
+          theme: "laughing",
           isNoUsed: false,
           isCountered: false,
         });
