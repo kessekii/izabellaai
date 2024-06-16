@@ -102,7 +102,7 @@ const WebcamCapture = () => {
     return () => {
       isMounted = false; // Cleanup to prevent memory leaks
     };
-  }, [running]);
+  }, [running, capture]);
 
   return (
     <div>
