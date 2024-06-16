@@ -2,14 +2,13 @@
 import React, { useRef, useCallback, useEffect, useState } from "react";
 import Webcam from "react-webcam";
 import { checkActionByTheme } from "./checkActionByTheme.ts";
-
+import Button from "@mui/material/Button";
 const WebcamCapture = () => {
   const webcamRef = useRef(null);
-  const [answer, setAnswer] = useState("no");
+
   const [language, setLanguage] = useState("en-EN");
   const [audioSrc, setAudioSrc] = useState(null);
-  let counterNo = 0;
-
+  const [counter, setCounter] = useState({ water: 0, agitation: 0 });
   const capture = useCallback(async () => {
     const tokenResp = await fetch(
       "https://backend-xisces6vkq-uc.a.run.app/auth-token",
@@ -21,26 +20,37 @@ const WebcamCapture = () => {
     const imageSrc = webcamRef.current.getScreenshot();
     if (imageSrc) {
       try {
-        await checkActionByTheme(
+        const props = {
           imageSrc,
           token,
           setAudioSrc,
-          setAnswer,
+          setCounter,
           language,
-          counterNo,
-          "water",
-          true
-        );
+          counter,
+        };
+
+        await checkActionByTheme(props, {
+          theme: "water",
+          isNoUsed: true,
+          isCountered: true,
+          maxCounter: 3,
+        });
+
+        await checkActionByTheme(props, {
+          theme: "agitation",
+          isNoUsed: false,
+          isCountered: false,
+        });
       } catch (error) {
         console.error("There was a problem with the fetch operation:", error);
       }
     }
-  }, [webcamRef, setAnswer, language]);
+  }, [webcamRef, language, counter]);
 
   useEffect(() => {
     const interval = setInterval(capture, 5000);
     return () => clearInterval(interval);
-  }, [capture, language]);
+  }, [capture, language, counter]);
 
   return (
     <div>
@@ -51,9 +61,9 @@ const WebcamCapture = () => {
         width="100%"
         height="auto"
       />
-      <text>{answer}</text>
+
       {audioSrc && <audio autoPlay src={audioSrc}></audio>}
-      <text
+      <Button
         onClick={() => {
           setLanguage((prev) => {
             if (prev === "en-EN") {
@@ -64,8 +74,8 @@ const WebcamCapture = () => {
           });
         }}
       >
-        {language}
-      </text>
+        {language + "   " + counter}
+      </Button>
     </div>
   );
 };

@@ -5,7 +5,7 @@ export const phraseDataBase = {
       question:
         "does a person on the photo drink water? Answer with only yes or no",
 
-      ask: [
+      no: [
         "Don't forget to drink some water!",
         "Stay hydrated, have a glass of water.",
         "Remember to sip some water throughout the day.",
@@ -17,7 +17,7 @@ export const phraseDataBase = {
         "Keep yourself hydrated, have some water.",
         "A quick water break could be just what you need.",
       ],
-      thanks: [
+      yes: [
         "Thank you for taking care of yourself and drinking water!",
         "I appreciate you staying hydrated!",
         "Thanks for making hydration a priority!",
@@ -30,13 +30,29 @@ export const phraseDataBase = {
         "Thank you for making the healthy choice to drink water!",
       ],
     },
+    agitation: {
+      question:
+        "does a person on the photo look agitated? Answer with only yes or no",
+      yes: [
+        "Take a deep breath and relax.",
+        "Try to relax and take it easy.",
+        "Take a moment to relax and unwind.",
+        "Relax and take a break.",
+        "Try to relax and calm down.",
+        "Take a deep breath and try to relax.",
+        "Relax and take a moment for yourself.",
+        "Try to relax and let go of tension.",
+        "Take a deep breath and relax your mind.",
+        "Relax and take a moment to breathe.",
+      ],
+    },
   },
   "ru-RU": {
     voice: "ru-RU-Wavenet-D",
     water: {
       question:
         "does a person on the photo drink water? Answer with only yes or no",
-      ask: [
+      no: [
         "Не хочешь выпить стакан воды?",
         "Тебе не нужна вода? Могу налить.",
         "Может, выпьешь немного воды?",
@@ -48,7 +64,7 @@ export const phraseDataBase = {
         "Выпей немного воды, если хочешь.",
         "Тебе не нужна вода? Могу налить холодной.",
       ],
-      thanks: [
+      yes: [
         "Спасибо, что выпили воды!",
         "Благодарю, что согласились выпить воду.",
         "Спасибо, что утолили жажду.",
