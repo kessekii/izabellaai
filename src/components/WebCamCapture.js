@@ -13,6 +13,7 @@ const onSubmit = async () => {
     }),
   });
 };
+
 const WebcamCapture = () => {
   const webcamRef = useRef(null);
   const [running, setRunning] = useState(true);
@@ -21,6 +22,9 @@ const WebcamCapture = () => {
   const [language, setLanguage] = useState("en-EN");
   const [audioSrc, setAudioSrc] = useState(null);
   const [counter, setCounter] = useState({ water: 0, agitation: 0 });
+  const handleReset = () => {
+    setRunning((prev) => !prev);
+  };
   const capture = useCallback(async () => {
     const tokenResp = await fetch(
       "https://izabellaaibackend-xisces6vkq-lm.a.run.app/auth-token",
@@ -83,12 +87,16 @@ const WebcamCapture = () => {
 
     const runRepeatedFunction = async () => {
       while (isMounted) {
-        await capture();
+        await capture((a) => {
+          console.log(a);
+        });
       }
     };
 
     if (running) {
       runRepeatedFunction();
+    } else {
+      handleReset();
     }
 
     return () => {
@@ -116,6 +124,7 @@ const WebcamCapture = () => {
               return "en-EN";
             }
           });
+          setRunning((prev) => !prev);
         }}
       >
         {language === "en-EN" ? "Сменить язык на Русский" : "Switch to English"}
