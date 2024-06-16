@@ -1,6 +1,6 @@
 import { phraseDataBase } from "../data/phraseDataBase.js"; // Import the phraseDataBase variable from the appropriate file
 export async function checkActionByTheme(
-  { imageSrc, token, setAudioSrc, setCounter, language, counter },
+  { imageSrc, token, setAudioSrc, setCounter, setStartTime, language, counter },
   { theme, isNoUsed, isCountered, maxCounter = 3 }
 ) {
   const response = await fetch(

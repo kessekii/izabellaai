@@ -5,7 +5,9 @@ import { checkActionByTheme } from "../actions/checkActionByTheme.js";
 import Button from "@mui/material/Button";
 const WebcamCapture = () => {
   const webcamRef = useRef(null);
+  const [running, setRunning] = useState(true);
 
+  const [startTime, setStartTime] = useState(performance.now());
   const [language, setLanguage] = useState("en-EN");
   const [audioSrc, setAudioSrc] = useState(null);
   const [counter, setCounter] = useState({ water: 0, agitation: 0 });
@@ -25,6 +27,7 @@ const WebcamCapture = () => {
           token,
           setAudioSrc,
           setCounter,
+          setStartTime,
           language,
           counter,
         };
@@ -35,33 +38,28 @@ const WebcamCapture = () => {
           isCountered: true,
           maxCounter: 3,
         });
-        const randomIndex = Math.floor(Math.random() * 3); // 0, 1, 2
 
-        switch (randomIndex) {
-          case 0:
-            await checkActionByTheme(props, {
-              theme: "agitation",
-              isNoUsed: false,
-              isCountered: false,
-            });
-            break;
-          case 1:
-            await checkActionByTheme(props, {
-              theme: "laughing",
-              isNoUsed: false,
-              isCountered: false,
-            });
-            break;
-          case 2:
-            await checkActionByTheme(props, {
-              theme: "smoking",
-              isNoUsed: false,
-              isCountered: false,
-            });
-            break;
-          default:
-            break;
-        }
+        await checkActionByTheme(props, {
+          theme: "agitation",
+          isNoUsed: false,
+          isCountered: false,
+        });
+
+        await checkActionByTheme(props, {
+          theme: "laughing",
+          isNoUsed: false,
+          isCountered: false,
+        });
+
+        await checkActionByTheme(props, {
+          theme: "smoking",
+          isNoUsed: false,
+          isCountered: false,
+        });
+
+        const endTime = performance.now();
+        setStartTime(() => endTime);
+        console.log("Total time: ", endTime - startTime);
       } catch (error) {
         console.error("There was a problem with the fetch operation:", error);
       }
@@ -69,9 +67,22 @@ const WebcamCapture = () => {
   }, [webcamRef, language, counter]);
 
   useEffect(() => {
-    const interval = setInterval(capture, 5000);
-    return () => clearInterval(interval);
-  }, [capture, language, counter]);
+    let isMounted = true;
+
+    const runRepeatedFunction = async () => {
+      while (isMounted) {
+        await capture();
+      }
+    };
+
+    if (running) {
+      runRepeatedFunction();
+    }
+
+    return () => {
+      isMounted = false; // Cleanup to prevent memory leaks
+    };
+  }, [running]);
 
   return (
     <div>
