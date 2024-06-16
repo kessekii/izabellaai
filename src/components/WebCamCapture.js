@@ -35,17 +35,32 @@ const WebcamCapture = () => {
           isCountered: true,
           maxCounter: 3,
         });
-
-        await checkActionByTheme(props, {
-          theme: "agitation",
-          isNoUsed: false,
-          isCountered: false,
-        });
-        await checkActionByTheme(props, {
-          theme: "laughing",
-          isNoUsed: false,
-          isCountered: false,
-        });
+        const randomIndex = Math.floor(Math.random() * 3); // 0, 1, 2
+        switch (randomIndex) {
+          case 0:
+            await checkActionByTheme(props, {
+              theme: "agitation",
+              isNoUsed: false,
+              isCountered: false,
+            });
+            break;
+          case 1:
+            await checkActionByTheme(props, {
+              theme: "laughing",
+              isNoUsed: false,
+              isCountered: false,
+            });
+            break;
+          case 2:
+            await checkActionByTheme(props, {
+              theme: "smoking",
+              isNoUsed: false,
+              isCountered: false,
+            });
+            break;
+          default:
+            break;
+        }
       } catch (error) {
         console.error("There was a problem with the fetch operation:", error);
       }
@@ -79,7 +94,7 @@ const WebcamCapture = () => {
           });
         }}
       >
-        {language + "   " + counter}
+        {language === "en-EN" ? "Сменить язык на Русский" : "Switch to English"}
       </Button>
     </div>
   );
