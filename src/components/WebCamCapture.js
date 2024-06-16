@@ -64,7 +64,7 @@ const WebcamCapture = () => {
         console.error("There was a problem with the fetch operation:", error);
       }
     }
-  }, [webcamRef, language, counter]);
+  }, [webcamRef, language, counter, startTime]);
 
   useEffect(() => {
     let isMounted = true;
@@ -107,6 +107,13 @@ const WebcamCapture = () => {
         }}
       >
         {language === "en-EN" ? "Сменить язык на Русский" : "Switch to English"}
+      </Button>
+      <Button
+        onClick={() => {
+          setRunning((prev) => !prev);
+        }}
+      >
+        TOGGLE {running ? "OFF" : "ON"}
       </Button>
     </div>
   );
