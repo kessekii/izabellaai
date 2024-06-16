@@ -1,13 +1,7 @@
-import { phraseDataBase } from "./WebCamCapture"; // Import the phraseDataBase variable from the appropriate file
+import { phraseDataBase } from "../data/phraseDataBase.js"; // Import the phraseDataBase variable from the appropriate file
 export async function checkActionByTheme(
-  imageSrc,
-  token,
-  setAudioSrc,
-  setAnswer,
-  language,
-  counterNo,
-  theme,
-  isCountered
+  { imageSrc, token, setAudioSrc, setCounter, setStartTime, language, counter },
+  { theme, isNoUsed, isCountered, maxCounter = 3 }
 ) {
   const response = await fetch(
     "https://us-central1-aiplatform.googleapis.com/v1/projects/streamingai-33a74/locations/us-central1/publishers/google/models/imagetext:predict",
@@ -39,18 +33,27 @@ export async function checkActionByTheme(
     console.log(response);
     throw new Error("Network response was not ok");
   }
-  const answer = await response.json();
-  if (isCountered && answer.predictions[0] === "no") {
-    counterNo = counterNo + 1;
-    if (counterNo >= 1) {
-      await voiceTheAction("ask");
+  const answer = (await response.json()).predictions[0].toLowerCase();
+  console.log(theme, ": ", answer);
+  if (isNoUsed && answer.includes("no")) {
+    if (isCountered) {
+      setCounter(
+        Object.assign({}, { ...counter, [theme]: counter[theme] + 1 })
+      );
+    }
+
+    if (isCountered && counter[theme] >= maxCounter - 1) {
+      await voiceTheAction(answer);
+      setCounter(0);
     }
   }
 
-  if (answer.predictions[0] === "yes") {
-    await voiceTheAction("thanks");
+  if (answer.includes("yes")) {
+    await voiceTheAction(answer);
+    if (counter[theme] > 0) {
+      setCounter(Object.assign({}, { ...counter, [theme]: 0 }));
+    }
   }
-  setAnswer(answer.predictions);
 
   async function voiceTheAction(action) {
     const randomIndex = Math.floor(
@@ -97,7 +100,7 @@ export async function checkActionByTheme(
       { type: "audio/mp3" }
     );
     const audioUrl = URL.createObjectURL(audioBlob);
-    counterNo = 0;
+
     setAudioSrc(audioUrl);
     return answer2;
   }
