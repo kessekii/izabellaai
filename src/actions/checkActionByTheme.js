@@ -1,4 +1,4 @@
-import { phraseDataBase } from "./phraseDataBase.ts"; // Import the phraseDataBase variable from the appropriate file
+import { phraseDataBase } from "../data/phraseDataBase.js"; // Import the phraseDataBase variable from the appropriate file
 export async function checkActionByTheme(
   { imageSrc, token, setAudioSrc, setCounter, language, counter },
   { theme, isNoUsed, isCountered, maxCounter = 3 }

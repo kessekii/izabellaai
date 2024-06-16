@@ -1,7 +1,7 @@
 // src/WebcamCapture.js
 import React, { useRef, useCallback, useEffect, useState } from "react";
 import Webcam from "react-webcam";
-import { checkActionByTheme } from "./checkActionByTheme.ts";
+import { checkActionByTheme } from "./actions/checkActionByTheme.js";
 import Button from "@mui/material/Button";
 const WebcamCapture = () => {
   const webcamRef = useRef(null);
