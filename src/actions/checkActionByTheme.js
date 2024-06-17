@@ -1,8 +1,9 @@
 import { phraseDataBase } from "../data/phraseDataBase.js"; // Import the phraseDataBase variable from the appropriate file
 export async function checkActionByTheme(
-  { imageSrc, token, setAudioSrc, setCounter, setStartTime, language, counter },
+  { token, setAudioSrc, setCounter, language, counter, webcamRef },
   { theme, isNoUsed, isCountered, maxCounter = 3 }
 ) {
+  const imageSrc = webcamRef.current.getScreenshot();
   const response = await fetch(
     "https://us-central1-aiplatform.googleapis.com/v1/projects/streamingai-33a74/locations/us-central1/publishers/google/models/imagetext:predict",
     {
@@ -22,7 +23,7 @@ export async function checkActionByTheme(
           },
         ],
         parameters: {
-          sampleCount: 2,
+          sampleCount: 1,
           language: language,
         },
       }),

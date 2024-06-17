@@ -18,7 +18,6 @@ const WebcamCapture = () => {
   const webcamRef = useRef(null);
   const [running, setRunning] = useState(true);
 
-  const [startTime, setStartTime] = useState(performance.now());
   const [language, setLanguage] = useState("en-EN");
   const [audioSrc, setAudioSrc] = useState(null);
   const [counter, setCounter] = useState({ water: 0, agitation: 0 });
@@ -37,13 +36,13 @@ const WebcamCapture = () => {
     if (imageSrc) {
       try {
         const props = {
-          imageSrc,
           token,
           setAudioSrc,
           setCounter,
-          setStartTime,
+
           language,
           counter,
+          webcamRef,
         };
         if (counter.water === 2) {
           await onSubmit();
@@ -72,24 +71,18 @@ const WebcamCapture = () => {
           isNoUsed: false,
           isCountered: false,
         });
-
-        const endTime = performance.now();
-        setStartTime(() => endTime);
-        console.log("Total time: ", endTime - startTime);
       } catch (error) {
         console.error("There was a problem with the fetch operation:", error);
       }
     }
-  }, [webcamRef, language, counter, startTime]);
+  }, [webcamRef, language, counter]);
 
   useEffect(() => {
     let isMounted = true;
 
     const runRepeatedFunction = async () => {
       while (isMounted) {
-        await capture((a) => {
-          console.log(a);
-        });
+        await capture();
       }
     };
 
@@ -102,7 +95,7 @@ const WebcamCapture = () => {
     return () => {
       isMounted = false; // Cleanup to prevent memory leaks
     };
-  }, [running, capture]);
+  }, [running]);
 
   return (
     <div>

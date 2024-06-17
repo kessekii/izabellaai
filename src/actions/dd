@@ -1,0 +1,35 @@
+LOCATION="europe-central2"
+MODEL_ID="gemini-1.0-pro-vision"
+PROJECT_ID="streamingai-33a74"
+
+curl \
+-X POST \
+-H "Authorization: Bearer $(gcloud auth print-access-token)" \
+-H "Content-Type: application/json"
+https://europe-central2-aiplatform.googleapis.com/v1/projects/streamingai-33a74/locations/us-central1/publishers/google/models/gemini-1.0-pro-vision:$\{GENERATE_RESPONSE_METHOD\} -d \
+$'{
+  "contents": {
+    "role": "user",
+    "parts": [
+      {
+        "fileData": {
+          "mimeType": "image/png",
+          "fileUri": "/Users/peter/Desktop/man.jpg"
+        }
+      },
+      {
+        "text": "Does a person on a photo is more smoking, drinking water, laughing or agitated? Answer choosing one of the options by name."
+      },
+    ]
+  },
+  "safety_settings": {
+    "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+    "threshold": "BLOCK_LOW_AND_ABOVE"
+  },
+  "generation_config": {
+    "temperature": 0.4,
+    "topP": 1,
+    "topK": 32,
+    "maxOutputTokens": 2048,
+  }
+}'
