@@ -29,6 +29,7 @@ const WebcamCapture = () => {
       "https://izabellaaibackend-xisces6vkq-lm.a.run.app/auth-token",
       {
         method: "GET",
+        origin: "https://fronteu-xisces6vkq-lm.a.run.app",
       }
     );
     const token = await tokenResp.json();
