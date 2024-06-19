@@ -20,9 +20,16 @@ const WebcamCapture = () => {
 
   const [language, setLanguage] = useState("en-EN");
   const [audioSrc, setAudioSrc] = useState(null);
+  const [blocker, setBlocker] = useState(false);
   const [counter, setCounter] = useState({ water: 0, agitation: 0 });
   const handleReset = () => {
     setRunning((prev) => !prev);
+  };
+  const handleSetAudioSrc = async (audioSrc) => {
+    setAudioSrc(audioSrc);
+    while (blocker) {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
   };
   const capture = useCallback(async () => {
     const tokenResp = await fetch(
@@ -38,9 +45,9 @@ const WebcamCapture = () => {
       try {
         const props = {
           token,
-          setAudioSrc,
+          handleSetAudioSrc,
           setCounter,
-
+          setBlocker,
           language,
           counter,
           webcamRef,
@@ -108,7 +115,15 @@ const WebcamCapture = () => {
         height="auto"
       />
 
-      {audioSrc && <audio autoPlay src={audioSrc}></audio>}
+      {audioSrc && (
+        <audio
+          autoPlay
+          onEnded={() => {
+            setBlocker(false);
+          }}
+          src={audioSrc}
+        ></audio>
+      )}
       <Button
         onClick={() => {
           setLanguage((prev) => {

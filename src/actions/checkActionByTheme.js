@@ -1,6 +1,14 @@
 import { phraseDataBase } from "../data/phraseDataBase.js"; // Import the phraseDataBase variable from the appropriate file
 export async function checkActionByTheme(
-  { token, setAudioSrc, setCounter, language, counter, webcamRef },
+  {
+    token,
+    handleSetAudioSrc,
+    setCounter,
+    setBlocker,
+    language,
+    counter,
+    webcamRef,
+  },
   { theme, isNoUsed, isCountered, maxCounter = 3 }
 ) {
   const imageSrc = webcamRef.current.getScreenshot();
@@ -44,12 +52,14 @@ export async function checkActionByTheme(
     }
 
     if (isCountered && counter[theme] >= maxCounter - 1) {
+      setBlocker(true);
       await voiceTheAction(answer);
       setCounter(0);
     }
   }
 
   if (answer.includes("yes")) {
+    setBlocker(true);
     await voiceTheAction(answer);
     if (counter[theme] > 0) {
       setCounter(Object.assign({}, { ...counter, [theme]: 0 }));
@@ -102,7 +112,7 @@ export async function checkActionByTheme(
     );
     const audioUrl = URL.createObjectURL(audioBlob);
 
-    setAudioSrc(audioUrl);
+    handleSetAudioSrc(audioUrl);
     return answer2;
   }
 }
