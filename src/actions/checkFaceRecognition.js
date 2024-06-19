@@ -19,7 +19,7 @@ export const checkFaceRecognition = async (
 
   try {
     console.log('Fetching person images...');
-    const resp = await fetch("http://localhost:8000/get-persons", {
+    const resp = await fetch("https://izabellaaibackend-xisces6vkq-lm.a.run.app/get-persons", {
       method: "GET",
       headers: {
         'Content-Type': 'application/json',
