@@ -2,7 +2,7 @@ import { phraseDataBase } from "../data/phraseDataBase.js";
 import combineImages from "./combinePhotos.js";
 
 export const checkFaceRecognition = async (
-  { token, setAudioSrc, setCounter, setStartTime, language, counter },
+  { token, setAudioSrc, setCounter, webcamRef, language, counter },
   { theme, isNoUsed, isCountered, maxCounter = 3, toggleFreeToCheck }
 ) => {
   const imageSrc = webcamRef.current.getScreenshot();
@@ -26,7 +26,7 @@ export const checkFaceRecognition = async (
     }
 
     const images = await resp.json();
-   console.log('Person images fetched:', images);
+   console.log('Person images fetched:', images.length);
     for (let i = 0; i < images.length; i++) {
       const data = "data:image/jpeg;base64," + images[i].base64String;
       
@@ -94,7 +94,6 @@ const generateInstances = async (imagesr, image, language) => {
   try {
     console.log('Combining images for instance...');
     const combiner = await combineImages(imagesr, image, 880, 880);
-    console.log('Images combined:', combiner);
 
     if (combiner.split(",")[0] !== "data:image/jpeg;base64") {
       console.error("Failed to combine images");

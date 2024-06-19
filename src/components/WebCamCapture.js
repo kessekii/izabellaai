@@ -2,6 +2,7 @@
 import React, { useRef, useCallback, useEffect, useState } from "react";
 import Webcam from "react-webcam";
 import { checkFaceRecognition } from "../actions/checkFaceRecognition.js";
+import { checkActionByTheme } from "../actions/checkActionByTheme.js";
 import combineImages from '../actions/combinePhotos';
 
 import Button from "@mui/material/Button";
@@ -62,7 +63,7 @@ const WebcamCapture = () => {
           isNoUsed: false,
           isCountered: false,
           maxCounter: 3,
-          imageSrc,
+          
           toggleFreeToCheck: setToggleFreeToCheck
         });
         await checkActionByTheme(props, {
