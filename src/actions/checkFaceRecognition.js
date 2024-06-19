@@ -3,8 +3,9 @@ import combineImages from "./combinePhotos.js";
 
 export const checkFaceRecognition = async (
   { token, setAudioSrc, setCounter, setStartTime, language, counter },
-  { theme, isNoUsed, isCountered, maxCounter = 3, imageSrc, toggleFreeToCheck }
+  { theme, isNoUsed, isCountered, maxCounter = 3, toggleFreeToCheck }
 ) => {
+  const imageSrc = webcamRef.current.getScreenshot();
   if (!imageSrc) {
     console.error("No image source provided");
     return;

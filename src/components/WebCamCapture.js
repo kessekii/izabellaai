@@ -37,6 +37,7 @@ const WebcamCapture = () => {
       "https://izabellaaibackend-xisces6vkq-lm.a.run.app/auth-token",
       {
         method: "GET",
+        origin: "https://fronteu-xisces6vkq-lm.a.run.app",
       }
     );
     const token = await tokenResp.json();
@@ -48,36 +49,14 @@ const WebcamCapture = () => {
           token,
           setAudioSrc, 
           setCounter,
-
+          
           language,
           counter,
           webcamRef,
         };
-        // if (counter.water === 2) {
-        //   await onSubmit();
-        // }
-        // await checkActionByTheme(props, {
-        //   theme: "water",
-        //   isNoUsed: true,
-        //   isCountered: true,
-        //   maxCounter: 3,
-        // });
-
-       
-
-        // await checkFaceRecognition(props, {
-        //   theme: "facerecognition",
-        //   isNoUsed: false,
-        //   isCountered: false,
-        // });
-
-        // await checkActionByTheme(props, {
-        //   theme: "laughing",
-        //   isNoUsed: false,
-        //   isCountered: false,
-        // });
-
-
+        if (counter.water === 2) {
+          await onSubmit();
+        }
         await checkFaceRecognition(props, {
           theme: "facerecognition",
           isNoUsed: false,
@@ -86,6 +65,28 @@ const WebcamCapture = () => {
           imageSrc,
           toggleFreeToCheck: setToggleFreeToCheck
         });
+        await checkActionByTheme(props, {
+          theme: "water",
+          isNoUsed: true,
+          isCountered: true,
+          maxCounter: 3,
+        });
+
+       
+
+        await checkFaceRecognition(props, {
+          theme: "facerecognition",
+          isNoUsed: false,
+          isCountered: false,
+        });
+
+        await checkActionByTheme(props, {
+          theme: "laughing",
+          isNoUsed: false,
+          isCountered: false,
+        });
+
+
 
         setFrameCount((prev) => prev + 1);
         
