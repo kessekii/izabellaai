@@ -2,8 +2,14 @@ import { phraseDataBase } from "../data/phraseDataBase.js";
 import combineImages from "./combinePhotos.js";
 
 export const checkFaceRecognition = async (
-  { token, setAudioSrc, setCounter, webcamRef, language, counter },
-  { theme, isNoUsed, isCountered, maxCounter = 3, toggleFreeToCheck }
+  { token,
+    handleSetAudioSrc,
+    setCounter,
+    setBlocker,
+    language,
+    counter,
+    webcamRef, },
+  { theme, isNoUsed, isCountered, maxCounter = 3, index }
 ) => {
   const imageSrc = webcamRef.current.getScreenshot();
   if (!imageSrc) {
@@ -26,16 +32,16 @@ export const checkFaceRecognition = async (
     }
 
     const images = await resp.json();
-   console.log('Person images fetched:', images.length);
-    for (let i = 0; i < images.length; i++) {
-      const data = "data:image/jpeg;base64," + images[i].base64String;
+    
+    
+      const data = "data:image/jpeg;base64," + images[index].base64String;
       
-      console.log('Combining images...');
+      console.log('recognition of : ', images[index].name, ' index : ', index)
       const hen = await generateInstances(imageSrc, data, language);
       if (!hen) {
         console.error("No instances generated");
         return;}
-      console.log('Sending combined image for prediction...');
+      
       const response = await fetch("https://us-central1-aiplatform.googleapis.com/v1/projects/streamingai-33a74/locations/us-central1/publishers/google/models/imagetext:predict", {
         method: "POST",
         headers: {
@@ -63,28 +69,15 @@ export const checkFaceRecognition = async (
         
           // await voiceTheAction({ token, setAudioSrc, language }, answer);
           setCounter(0);
-          if (i = images.length - 1) {
-            toggleFreeToCheck(false)
-          }
+          
           
         
       } else if (answer.includes("yes")) {
-
-        await voiceTheAction({ token, setAudioSrc, language }, images[i].name);
-        if (i = images.length - 1) {
-          toggleFreeToCheck(false)
-        }
-       
-        if (counter[theme] > 0) {
-          setCounter({ ...counter, [theme]: 0 });
-        }
-      } else {
-        if (i = images.length - 1) {
-          toggleFreeToCheck(false)
-        }
-      }
+        
+        await voiceTheAction({ token, handleSetAudioSrc, language }, images[index].name);
+      } 
       
-    }
+    
   } catch (error) {
     console.error("Error in face recognition process:", error);
   }
@@ -110,7 +103,7 @@ const generateInstances = async (imagesr, image, language) => {
   }
 };
 
-const voiceTheAction = async ({ token, setAudioSrc, language, theme }, name) => {
+const voiceTheAction = async ({ token, handleSetAudioSrc, language, theme }, name) => {
   try {
     const randomIndex = Math.floor(
       Math.random() * phraseDataBase[language]["facerecognition"].recognised.length
@@ -151,7 +144,7 @@ const voiceTheAction = async ({ token, setAudioSrc, language, theme }, name) => 
     );
     const audioUrl = URL.createObjectURL(audioBlob);
 
-    setAudioSrc(audioUrl);
+    handleSetAudioSrc(audioUrl);
     return audioContent;
   } catch (error) {
     console.error("Error in voice action:", error);

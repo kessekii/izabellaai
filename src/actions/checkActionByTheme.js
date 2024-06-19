@@ -11,6 +11,7 @@ export async function checkActionByTheme(
   },
   { theme, isNoUsed, isCountered, maxCounter = 3 }
 ) {
+  const imageSrc = webcamRef.current.getScreenshot();
   const response = await fetch(
     "https://us-central1-aiplatform.googleapis.com/v1/projects/streamingai-33a74/locations/us-central1/publishers/google/models/imagetext:predict",
     {
@@ -51,14 +52,14 @@ export async function checkActionByTheme(
     }
 
     if (isCountered && counter[theme] >= maxCounter - 1) {
-      setBlocker(true);
+      
       await voiceTheAction(answer);
-      setCounter(0);
+      setCounter({}, { ...counter, [theme]: 0 });
     }
   }
 
   if (answer.includes("yes")) {
-    setBlocker(true);
+    
     await voiceTheAction(answer);
     if (counter[theme] > 0) {
       setCounter(Object.assign({}, { ...counter, [theme]: 0 }));

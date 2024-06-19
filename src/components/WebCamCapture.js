@@ -1,5 +1,5 @@
 // src/WebcamCapture.js
-import React, { useRef, useCallback, useEffect, useState } from "react";
+import React, { useRef, useCallback, useEffect, useState, useMemo } from "react";
 import Webcam from "react-webcam";
 import { checkFaceRecognition } from "../actions/checkFaceRecognition.js";
 import { checkActionByTheme } from "../actions/checkActionByTheme.js";
@@ -29,6 +29,7 @@ const WebcamCapture = () => {
   const [language, setLanguage] = useState("en-EN");
   const [audioSrc, setAudioSrc] = useState(null);
   const [blocker, setBlocker] = useState(false);
+  const [playstart, setPlaystart] = useState(false)
   const [counter, setCounter] = useState({ water: 0, agitation: 0 });
   const [toggleFreeToCheck, setToggleFreeToCheck] = useState(false)
   // const handleReset = () => {
@@ -38,11 +39,16 @@ const WebcamCapture = () => {
     setRunning((prev) => !prev);
   };
   const handleSetAudioSrc = async (audioSrc) => {
-    setAudioSrc(audioSrc);
-    while (blocker) {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+    if (!blocker) {
+      setBlocker(true);
+      setAudioSrc(audioSrc);
+      while (blocker) {
+        await new Promise((resolve) => setTimeout(resolve, 500));
+      }
     }
+    
   };
+  
   const capture = useCallback(async () => {
     const tokenResp = await fetch(
       "https://izabellaaibackend-xisces6vkq-lm.a.run.app/auth-token",
@@ -53,7 +59,7 @@ const WebcamCapture = () => {
     );
     const token = await tokenResp.json();
     const imageSrc = webcamRef.current.getScreenshot();
-    if (imageSrc && !toggleFreeToCheck) {
+    if (imageSrc && running && !blocker) {
       try {
 
         const props = {
@@ -65,17 +71,31 @@ const WebcamCapture = () => {
           counter,
           webcamRef,
         };
-        if (counter.water === 2) {
-          await onSubmit();
-        }
+        
         await checkFaceRecognition(props, {
           theme: "facerecognition",
           isNoUsed: false,
           isCountered: false,
           maxCounter: 3,
-          
-          toggleFreeToCheck: setToggleFreeToCheck
+          index: 0
         });
+        await checkFaceRecognition(props, {
+          theme: "facerecognition",
+          isNoUsed: false,
+          isCountered: false,
+          maxCounter: 3,
+          index: 1
+        });
+        await checkFaceRecognition(props, {
+          theme: "facerecognition",
+          isNoUsed: false,
+          isCountered: false,
+          maxCounter: 3,
+          index: 2
+        });
+        if (counter.water === 2) {
+          await onSubmit();
+        }
         await checkActionByTheme(props, {
           theme: "water",
           isNoUsed: true,
@@ -85,36 +105,34 @@ const WebcamCapture = () => {
 
        
 
-        await checkFaceRecognition(props, {
-          theme: "facerecognition",
-          isNoUsed: false,
-          isCountered: false,
-        });
-
+      
         await checkActionByTheme(props, {
           theme: "laughing",
           isNoUsed: false,
           isCountered: false,
         });
 
+        await checkActionByTheme(props, {
+          theme: "smoking",
+          isNoUsed: false,
+          isCountered: false,
+        });
 
+        await checkActionByTheme(props, {
+          theme: "agitation",
+          isNoUsed: false,
+          isCountered: false,
+        });
 
-        setFrameCount((prev) => prev + 1);
+        // setFrameCount((prev) => prev + 1);
         
       } catch (error) {
         console.error("There was a problem with the fetch operation:", error);
       }
     }
-  });
+  }, [language, blocker, counter]);
 
-  useEffect(() => {
-    if (toggleFreeToCheck) {
-      setTimeout(() => {
-        setToggleFreeToCheck(false);
-      }
-      , 40000);
-    }
-  }, [frameCount])
+  
   
 
   useEffect(() => {
@@ -123,9 +141,10 @@ const WebcamCapture = () => {
     
     const runRepeatedFunction = async () => {
      try {
-       await capture();
-       if (!toggleFreeToCheck) {
-         runRepeatedFunction();
+       
+       while (running) {
+
+        await capture();
        }
       
 
@@ -138,21 +157,12 @@ const WebcamCapture = () => {
 
     return () => runRepeatedFunction();
     
-  }, [toggleFreeToCheck]);
+  }, [running]);
   
 
   return (
     <div>
-      <Text
-        style={{
-          fontSize: "20px",
-          color: "black",
-          textAlign: "center",
-          marginBottom: "10px",
-        }}
-      >
-        {frameCount}
-      </Text>
+     
       <Webcam
         audio={false}
         ref={webcamRef}
@@ -161,15 +171,16 @@ const WebcamCapture = () => {
         height="auto"
       />
 
-      {audioSrc && (
+      
         <audio
           autoPlay
           onEnded={() => {
+            
             setBlocker(false);
           }}
           src={audioSrc}
         ></audio>
-      )}
+      
       <Button
         onClick={() => {
           setLanguage((prev) => {
