@@ -1,8 +1,12 @@
 // src/WebcamCapture.js
 import React, { useRef, useCallback, useEffect, useState } from "react";
 import Webcam from "react-webcam";
-import { checkActionByTheme } from "../actions/checkActionByTheme.js";
+import { checkFaceRecognition } from "../actions/checkFaceRecognition.js";
+import combineImages from '../actions/combinePhotos';
+
 import Button from "@mui/material/Button";
+import Text from "@mui/material/Typography";
+
 const onSubmit = async () => {
   await fetch("https://izabellaaibackend-xisces6vkq-lm.a.run.app/email", {
     method: "POST",
@@ -14,16 +18,20 @@ const onSubmit = async () => {
   });
 };
 
+
+
 const WebcamCapture = () => {
+
   const webcamRef = useRef(null);
   const [running, setRunning] = useState(true);
-
+  const [frameCount, setFrameCount] = useState(0);
   const [language, setLanguage] = useState("en-EN");
   const [audioSrc, setAudioSrc] = useState(null);
   const [counter, setCounter] = useState({ water: 0, agitation: 0 });
-  const handleReset = () => {
-    setRunning((prev) => !prev);
-  };
+  const [toggleFreeToCheck, setToggleFreeToCheck] = useState(false)
+  // const handleReset = () => {
+  //   setRunning((prev) => !prev);
+  // };
   const capture = useCallback(async () => {
     const tokenResp = await fetch(
       "https://izabellaaibackend-xisces6vkq-lm.a.run.app/auth-token",
@@ -33,72 +41,106 @@ const WebcamCapture = () => {
     );
     const token = await tokenResp.json();
     const imageSrc = webcamRef.current.getScreenshot();
-    if (imageSrc) {
+    if (imageSrc && !toggleFreeToCheck) {
       try {
+
         const props = {
           token,
-          setAudioSrc,
+          setAudioSrc, 
           setCounter,
 
           language,
           counter,
           webcamRef,
         };
-        if (counter.water === 2) {
-          await onSubmit();
-        }
-        await checkActionByTheme(props, {
-          theme: "water",
-          isNoUsed: true,
-          isCountered: true,
+        // if (counter.water === 2) {
+        //   await onSubmit();
+        // }
+        // await checkActionByTheme(props, {
+        //   theme: "water",
+        //   isNoUsed: true,
+        //   isCountered: true,
+        //   maxCounter: 3,
+        // });
+
+       
+
+        // await checkFaceRecognition(props, {
+        //   theme: "facerecognition",
+        //   isNoUsed: false,
+        //   isCountered: false,
+        // });
+
+        // await checkActionByTheme(props, {
+        //   theme: "laughing",
+        //   isNoUsed: false,
+        //   isCountered: false,
+        // });
+
+
+        await checkFaceRecognition(props, {
+          theme: "facerecognition",
+          isNoUsed: false,
+          isCountered: false,
           maxCounter: 3,
+          imageSrc,
+          toggleFreeToCheck: setToggleFreeToCheck
         });
 
-        await checkActionByTheme(props, {
-          theme: "agitation",
-          isNoUsed: false,
-          isCountered: false,
-        });
-
-        await checkActionByTheme(props, {
-          theme: "laughing",
-          isNoUsed: false,
-          isCountered: false,
-        });
-
-        await checkActionByTheme(props, {
-          theme: "smoking",
-          isNoUsed: false,
-          isCountered: false,
-        });
+        setFrameCount((prev) => prev + 1);
+        
       } catch (error) {
         console.error("There was a problem with the fetch operation:", error);
       }
     }
-  }, [webcamRef, language, counter]);
+  });
 
   useEffect(() => {
-    let isMounted = true;
-
-    const runRepeatedFunction = async () => {
-      while (isMounted) {
-        await capture();
+    if (toggleFreeToCheck) {
+      setTimeout(() => {
+        setToggleFreeToCheck(false);
       }
-    };
+      , 40000);
+    }
+  }, [frameCount])
+  
 
-    if (running) {
-      runRepeatedFunction();
-    } else {
-      handleReset();
+  useEffect(() => {
+    
+
+    
+    const runRepeatedFunction = async () => {
+     try {
+       await capture();
+       if (!toggleFreeToCheck) {
+         runRepeatedFunction();
+       }
+      
+
+     } catch (error) {
+        console.error("There was a problem with the fetch operation:", error);
+     }
+        
+        
     }
 
-    return () => {
-      isMounted = false; // Cleanup to prevent memory leaks
-    };
-  }, [running]);
+    return () => runRepeatedFunction();
+    
+  }, [toggleFreeToCheck]);
+  
 
   return (
     <div>
+      <Text
+        style={{
+          fontSize: "20px",
+          color: "black",
+          textAlign: "center",
+          marginBottom: "10px",
+        }}
+      >
+        {frameCount}
+      </Text>
       <Webcam
         audio={false}
         ref={webcamRef}
@@ -122,6 +164,7 @@ const WebcamCapture = () => {
       >
         {language === "en-EN" ? "Сменить язык на Русский" : "Switch to English"}
       </Button>
+
       <Button
         onClick={() => {
           setRunning((prev) => !prev);
@@ -129,6 +172,7 @@ const WebcamCapture = () => {
       >
         TOGGLE {running ? "OFF" : "ON"}
       </Button>
+    
     </div>
   );
 };
