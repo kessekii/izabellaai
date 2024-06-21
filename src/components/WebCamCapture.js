@@ -14,6 +14,7 @@ import combineImages from "../actions/combinePhotos";
 import Button from "@mui/material/Button";
 import Text from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
+import Typography from "@mui/material/Typography";
 const onSubmit = async () => {
   await fetch("https://izabellaaibackend-xisces6vkq-lm.a.run.app/email", {
     method: "POST",
@@ -29,6 +30,7 @@ const WebcamCapture = () => {
   const webcamRef = useRef(null);
   const [running, setRunning] = useState(true);
   const [frameCount, setFrameCount] = useState(0);
+  const [actionFinState, setActionFinState] = useState("");
   const [language, setLanguage] = useState("ru-RU");
   const [audioSrc, setAudioSrc] = useState(null);
   const [blocker, setBlocker] = useState(false);
@@ -71,6 +73,7 @@ const WebcamCapture = () => {
           language,
           counter,
           webcamRef,
+          setActionFinState,
         };
 
         // await checkFaceRecognition(props, {
@@ -158,6 +161,7 @@ const WebcamCapture = () => {
   }, [audioSrc]);
   return (
     <div>
+      <Typography>{actionFinState}</Typography>
       <Webcam
         audio={false}
         ref={webcamRef}
@@ -180,14 +184,6 @@ const WebcamCapture = () => {
         }}
       >
         {language === "en-EN" ? "Сменить язык на Русский" : "Switch to English"}
-      </Button>
-
-      <Button
-        onClick={() => {
-          setRunning((prev) => !prev);
-        }}
-      >
-        TOGGLE {running ? "OFF" : "ON"}
       </Button>
     </div>
   );
