@@ -73,27 +73,27 @@ const WebcamCapture = () => {
           webcamRef,
         };
 
-        await checkFaceRecognition(props, {
-          theme: "facerecognition",
-          isNoUsed: false,
-          isCountered: false,
-          maxCounter: 3,
-          index: 0,
-        });
-        await checkFaceRecognition(props, {
-          theme: "facerecognition",
-          isNoUsed: false,
-          isCountered: false,
-          maxCounter: 3,
-          index: 1,
-        });
-        await checkFaceRecognition(props, {
-          theme: "facerecognition",
-          isNoUsed: false,
-          isCountered: false,
-          maxCounter: 3,
-          index: 2,
-        });
+        // await checkFaceRecognition(props, {
+        //   theme: "facerecognition",
+        //   isNoUsed: false,
+        //   isCountered: false,
+        //   maxCounter: 3,
+        //   index: 0,
+        // });
+        // await checkFaceRecognition(props, {
+        //   theme: "facerecognition",
+        //   isNoUsed: false,
+        //   isCountered: false,
+        //   maxCounter: 3,
+        //   index: 1,
+        // });
+        // await checkFaceRecognition(props, {
+        //   theme: "facerecognition",
+        //   isNoUsed: false,
+        //   isCountered: false,
+        //   maxCounter: 3,
+        //   index: 2,
+        // });
         setBlocker(false);
         if (counter.water === 2) {
           await onSubmit();
