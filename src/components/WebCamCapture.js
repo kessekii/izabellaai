@@ -13,7 +13,7 @@ import combineImages from "../actions/combinePhotos";
 
 import Button from "@mui/material/Button";
 import Text from "@mui/material/Typography";
-
+import Paper from "@mui/material/Paper";
 const onSubmit = async () => {
   await fetch("https://izabellaaibackend-xisces6vkq-lm.a.run.app/email", {
     method: "POST",
@@ -94,6 +94,7 @@ const WebcamCapture = () => {
           maxCounter: 3,
           index: 2,
         });
+        setBlocker(false);
         if (counter.water === 2) {
           await onSubmit();
         }
@@ -142,7 +143,19 @@ const WebcamCapture = () => {
 
     return () => runRepeatedFunction();
   }, [running]);
-
+  const AudioGonevo = useMemo(() => {
+    return (
+      <Paper>
+        <audio
+          src={audioSrc}
+          autoPlay
+          onEnded={() => {
+            setBlocker(false);
+          }}
+        />
+      </Paper>
+    );
+  }, [audioSrc]);
   return (
     <div>
       <Webcam
@@ -153,14 +166,7 @@ const WebcamCapture = () => {
         height="auto"
       />
 
-      <audio
-        autoPlay
-        onEnded={() => {
-          setBlocker(false);
-        }}
-        src={audioSrc}
-      ></audio>
-
+      {AudioGonevo}
       <Button
         onClick={() => {
           setLanguage((prev) => {
