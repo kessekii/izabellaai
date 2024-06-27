@@ -18,7 +18,7 @@ export async function checkActionByTheme(
     let response;
     try {
       response = await fetch(
-        "https://us-central1-aiplatform.googleapis.com/v1/projects/streamingai-33a74/locations/us-central1/publishers/google/models/imagetext:predict",
+        "http://85.65.185.254:8000/process",
         {
           method: "POST",
           headers: {
@@ -27,18 +27,7 @@ export async function checkActionByTheme(
           },
 
           body: JSON.stringify({
-            instances: [
-              {
-                prompt: phraseDataBase[language][theme].question,
-                image: {
-                  bytesBase64Encoded: imageSrc.split(",")[1],
-                },
-              },
-            ],
-            parameters: {
-              sampleCount: 1,
-              language: language,
-            },
+            image: imageSrc, text: 'Are they the same?'
           }),
         }
       );
