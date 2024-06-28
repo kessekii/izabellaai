@@ -1,31 +1,32 @@
 import { phraseDataBase } from "../data/phraseDataBase.js"; // Import the phraseDataBase variable from the appropriate file
-import { Buffer } from "buffer"; // Import the Buffer class from the buffer module
-import { Base64 } from "js-base64"; // Import the Base64 class from the js-base64 module
-import axios from "axios";
-function base64ToByteArray(base64) {
-  // Decode base64 to raw binary string using Base64 library
-  const binaryString = Base64.encode(base64);
-  // Create a Uint8Array to hold the bytes
-  const byteArray = new Uint8Array(binaryString.length);
-  // Fill the Uint8Array with the byte values
-  for (let i = 0; i < binaryString.length; i++) {
-    byteArray[i] = binaryString.charCodeAt(i);
+
+const resizeImage = async (base64Image1) => {
+  const loadImage = (src) => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = reject;
+      img.src = src;
+    });
+  };
+
+  const canvas = document.createElement("canvas");
+  canvas.width = 720;
+  canvas.height = 576;
+  const ctx = canvas.getContext("2d");
+
+  try {
+    const img1 = await loadImage(base64Image1);
+
+    // Draw the first image resized to 125x125
+    ctx.drawImage(img1, 0, 0, 720, 576);
+    // Draw the second image resized to 125x125, positioned next to the first image
+
+    return canvas.toDataURL(); // Return the combined image as a base64 string
+  } catch (error) {
+    console.error("Error loading images:", error);
   }
-  return byteArray;
-}
-function base64ToArrayBuffer(base64) {
-  var binaryString = atob(base64);
-  var bytes = new Uint8Array(binaryString.length);
-  for (var i = 0; i < binaryString.length; i++) {
-    bytes[i] = binaryString.charCodeAt(i);
-  }
-  return bytes.buffer;
-}
-function byteArrayToUtf8(byteArray) {
-  // Use TextDecoder to convert byte array to UTF-8 string
-  const decoder = new TextDecoder("utf-8");
-  return decoder.decode(byteArray);
-}
+};
 
 // Example usage
 
@@ -48,14 +49,14 @@ export async function checkActionByTheme(
 
     const phrase = phraseDataBase[language][theme].question.toString();
     let response;
-
-    const jsonfile = {
-      image: imageSrc.split(",")[1],
+    const resizedImage = await resizeImage(imageSrc);
+    const payloadObj = {
+      image: resizedImage.split(",")[1],
 
       text: phrase,
     };
 
-    const payload = JSON.stringify(jsonfile);
+    const payload = JSON.stringify(payloadObj);
 
     response = await fetch("http://85.65.185.254:8000/process", {
       method: "POST",

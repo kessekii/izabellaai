@@ -9,10 +9,9 @@ import React, {
 import Webcam from "react-webcam";
 import { checkFaceRecognition } from "../actions/checkFaceRecognition.js";
 import { checkActionByTheme } from "../actions/checkActionByTheme.js";
-import combineImages from "../actions/combinePhotos";
 
 import Button from "@mui/material/Button";
-import Text from "@mui/material/Typography";
+
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 const onSubmit = async () => {
@@ -29,20 +28,18 @@ const onSubmit = async () => {
 const WebcamCapture = () => {
   const webcamRef = useRef(null);
   const [running, setRunning] = useState(true);
-  const [frameCount, setFrameCount] = useState(0);
+
   const [actionFinState, setActionFinState] = useState("");
   const [language, setLanguage] = useState("ru-RU");
   const [audioSrc, setAudioSrc] = useState(null);
   const [blocker, setBlocker] = useState(false);
-  const [playstart, setPlaystart] = useState(false);
+
   const [counter, setCounter] = useState({ water: 0, agitation: 0 });
-  const [toggleFreeToCheck, setToggleFreeToCheck] = useState(false);
+
   // const handleReset = () => {
   //   setRunning((prev) => !prev);
   // };
-  const handleReset = () => {
-    setRunning((prev) => !prev);
-  };
+
   const handleSetAudioSrc = async (audioSrc) => {
     if (!blocker) {
       setBlocker(true);
@@ -76,31 +73,31 @@ const WebcamCapture = () => {
           setActionFinState,
         };
 
-        // await checkFaceRecognition(props, {
-        //   theme: "facerecognition",
-        //   isNoUsed: false,
-        //   isCountered: false,
+        await checkFaceRecognition(props, {
+          theme: "facerecognition",
+          isNoUsed: false,
+          isCountered: false,
 
-        //   index: 0,
-        // });
-        // await checkFaceRecognition(props, {
-        //   theme: "facerecognition",
-        //   isNoUsed: false,
-        //   isCountered: false,
+          index: 0,
+        });
+        await checkFaceRecognition(props, {
+          theme: "facerecognition",
+          isNoUsed: false,
+          isCountered: false,
 
-        //   index: 1,
-        // });
-        // await checkFaceRecognition(props, {
-        //   theme: "facerecognition",
-        //   isNoUsed: false,
-        //   isCountered: false,
+          index: 1,
+        });
+        await checkFaceRecognition(props, {
+          theme: "facerecognition",
+          isNoUsed: false,
+          isCountered: false,
 
-        //   index: 2,
-        // });
+          index: 2,
+        });
 
-        if (counter.water === 2) {
-          await onSubmit();
-        }
+        // if (counter.water === 2) {
+        //   await onSubmit();
+        // }
         await checkActionByTheme(props, {
           theme: "water",
           isNoUsed: true,

@@ -1,6 +1,34 @@
 import { phraseDataBase } from "../data/phraseDataBase.js";
-import combineImages from "./combinePhotos.js";
 
+const combineImages = async (base64Image1, base64Image2) => {
+  const loadImage = (src) => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = reject;
+      img.src = src;
+    });
+  };
+
+  const canvas = document.createElement("canvas");
+  canvas.width = 250;
+  canvas.height = 125;
+  const ctx = canvas.getContext("2d");
+
+  try {
+    const img1 = await loadImage(base64Image1);
+    const img2 = await loadImage(base64Image2);
+
+    // Draw the first image resized to 125x125
+    ctx.drawImage(img1, 0, 0, 125, 125);
+    // Draw the second image resized to 125x125, positioned next to the first image
+    ctx.drawImage(img2, 125, 0, 125, 125);
+
+    return canvas.toDataURL(); // Return the combined image as a base64 string
+  } catch (error) {
+    console.error("Error loading images:", error);
+  }
+};
 export const checkFaceRecognition = async (
   {
     token,
@@ -40,14 +68,12 @@ export const checkFaceRecognition = async (
   const data = "data:image/jpeg;base64," + images[index].base64String;
 
   console.log("recognition of : ", images[index].name, " index : ", index);
-  const hen = await generateInstances(imageSrc, data, language);
-  if (!hen) {
-    console.error("No instances generated");
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    return;
-  }
-
-  const payload = JSON.stringify(hen);
+  const combined = await combineImages(imageSrc, data);
+  const payloadObj = {
+    image: combined.split(",")[1],
+    text: phraseDataBase[language][theme].question,
+  };
+  const payload = JSON.stringify(payloadObj);
 
   const response = await fetch("http://85.65.185.254:8000/process", {
     method: "POST",
@@ -99,7 +125,10 @@ export const checkFaceRecognition = async (
 
     const payload = {
       input: {
-        text: phraseDataBase[language][theme][action][randomIndex],
+        text:
+          phraseDataBase[language][theme][action][randomIndex] +
+          ", " +
+          images[index].name,
       },
       voice: {
         languageCode: language,
@@ -145,20 +174,20 @@ export const checkFaceRecognition = async (
   }
 };
 
-const generateInstances = async (imagesr, image, language) => {
-  try {
-    console.log("Combining images for instance...");
-    const combiner = await combineImages(imagesr, image, 880, 880);
+// const generateInstances = async (imagesr, image, language) => {
+//   try {
+//     console.log("Combining images for instance...");
+//     const combiner = await combineImages(imagesr, image, 880, 880);
 
-    if (combiner.split(",")[0] !== "data:image/jpeg;base64") {
-      console.error("Failed to combine images");
-      return;
-    }
-    return {
-      text: phraseDataBase[language]["facerecognition"].question,
-      image: combiner.split(",")[1],
-    };
-  } catch (error) {
-    console.error("Error generating instance:", error);
-  }
-};
+//     if (combiner.split(",")[0] !== "data:image/jpeg;base64") {
+//       console.error("Failed to combine images");
+//       return;
+//     }
+//     return {
+//       text: phraseDataBase[language]["facerecognition"].question,
+//       image: combiner.split(",")[1],
+//     };
+//   } catch (error) {
+//     console.error("Error generating instance:", error);
+//   }
+// };
