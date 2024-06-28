@@ -77,8 +77,9 @@ export const phraseDataBase = {
       ],
     },
     facerecognition: {
-      question: "is a person on the left picture same person as a person on the right picture? Answer only with name (that is a name of image of recognised person) or no",
-      recognised: [
+      question:
+        "is a person on the left picture same person as a person on the right picture? Answer only with name (that is a name of image of recognised person) or no",
+      yes: [
         "Good to see you ,",
         "How are you doing , ",
         "Hello , ",
@@ -169,9 +170,9 @@ export const phraseDataBase = {
       ],
     },
     facerecognition: {
-      question: "is a person on the left picture same person as a person on the right picture? Answer only with name (that is a name of image of recognised person) or no",
-      recognised: [
-       "Рад видеть вас,",
+      question: "are they the same person?",
+      yes: [
+        "Рад видеть вас,",
         "Как у вас дела,",
         "Привет,",
         "Приятно снова встретиться ,",

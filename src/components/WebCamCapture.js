@@ -80,24 +80,24 @@ const WebcamCapture = () => {
         //   theme: "facerecognition",
         //   isNoUsed: false,
         //   isCountered: false,
-        //   maxCounter: 3,
+
         //   index: 0,
         // });
         // await checkFaceRecognition(props, {
         //   theme: "facerecognition",
         //   isNoUsed: false,
         //   isCountered: false,
-        //   maxCounter: 3,
+
         //   index: 1,
         // });
         // await checkFaceRecognition(props, {
         //   theme: "facerecognition",
         //   isNoUsed: false,
         //   isCountered: false,
-        //   maxCounter: 3,
+
         //   index: 2,
         // });
-        setBlocker(false);
+
         if (counter.water === 2) {
           await onSubmit();
         }
@@ -107,25 +107,25 @@ const WebcamCapture = () => {
           isCountered: true,
           maxCounter: 3,
         });
-
+        await new Promise((resolve) => setTimeout(resolve, 2000));
         await checkActionByTheme(props, {
           theme: "laughing",
           isNoUsed: false,
           isCountered: false,
         });
-
+        await new Promise((resolve) => setTimeout(resolve, 2000));
         await checkActionByTheme(props, {
           theme: "smoking",
           isNoUsed: false,
           isCountered: false,
         });
-
+        await new Promise((resolve) => setTimeout(resolve, 2000));
         await checkActionByTheme(props, {
           theme: "agitation",
           isNoUsed: false,
           isCountered: false,
         });
-
+        await new Promise((resolve) => setTimeout(resolve, 2000));
         // setFrameCount((prev) => prev + 1);
       } catch (error) {
         console.error("There was a problem with the fetch operation:", error);

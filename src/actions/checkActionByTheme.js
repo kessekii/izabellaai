@@ -1,4 +1,34 @@
 import { phraseDataBase } from "../data/phraseDataBase.js"; // Import the phraseDataBase variable from the appropriate file
+import { Buffer } from "buffer"; // Import the Buffer class from the buffer module
+import { Base64 } from "js-base64"; // Import the Base64 class from the js-base64 module
+import axios from "axios";
+function base64ToByteArray(base64) {
+  // Decode base64 to raw binary string using Base64 library
+  const binaryString = Base64.encode(base64);
+  // Create a Uint8Array to hold the bytes
+  const byteArray = new Uint8Array(binaryString.length);
+  // Fill the Uint8Array with the byte values
+  for (let i = 0; i < binaryString.length; i++) {
+    byteArray[i] = binaryString.charCodeAt(i);
+  }
+  return byteArray;
+}
+function base64ToArrayBuffer(base64) {
+  var binaryString = atob(base64);
+  var bytes = new Uint8Array(binaryString.length);
+  for (var i = 0; i < binaryString.length; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+  return bytes.buffer;
+}
+function byteArrayToUtf8(byteArray) {
+  // Use TextDecoder to convert byte array to UTF-8 string
+  const decoder = new TextDecoder("utf-8");
+  return decoder.decode(byteArray);
+}
+
+// Example usage
+
 export async function checkActionByTheme(
   {
     token,
@@ -14,39 +44,29 @@ export async function checkActionByTheme(
   { theme, isNoUsed, isCountered, maxCounter = 3 }
 ) {
   try {
-    const imageSrc = webcamRef.current.getScreenshot();
-    let response;
-    try {
-      response = await fetch(
-        "https://us-central1-aiplatform.googleapis.com/v1/projects/streamingai-33a74/locations/us-central1/publishers/google/models/imagetext:predict",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
+    let imageSrc = webcamRef.current.getScreenshot();
 
-          body: JSON.stringify({
-            instances: [
-              {
-                prompt: phraseDataBase[language][theme].question,
-                image: {
-                  bytesBase64Encoded: imageSrc.split(",")[1],
-                },
-              },
-            ],
-            parameters: {
-              sampleCount: 1,
-              language: language,
-            },
-          }),
-        }
-      );
-    } catch (error) {
-      setActionFinState("theme : " + theme + " error");
-      console.error("No image source provided");
-      return;
-    }
+    const phrase = phraseDataBase[language][theme].question.toString();
+    let response;
+
+    const jsonfile = {
+      image: imageSrc.split(",")[1],
+
+      text: phrase,
+    };
+
+    const payload = JSON.stringify(jsonfile);
+
+    response = await fetch("http://85.65.185.254:8000/process", {
+      method: "POST",
+      Authorization: `Bearer ${token}`,
+
+      headers: {
+        "Content-Type": "application/json",
+      },
+
+      body: payload,
+    });
 
     if (!response.ok) {
       console.log(theme, "error");
@@ -56,7 +76,7 @@ export async function checkActionByTheme(
       throw new Error("Network response was not ok");
     }
 
-    const answer = (await response.json()).predictions[0].toLowerCase();
+    const answer = (await response.json()).answer;
     console.log(theme, ": ", answer);
     setActionFinState(() => "theme : " + theme + " succeded: " + answer);
     if (isNoUsed && answer.includes("no")) {
@@ -113,6 +133,7 @@ export async function checkActionByTheme(
 
       if (!result2.ok) {
         console.log(result2);
+        await new Promise((resolve) => setTimeout(resolve, 2000));
         throw new Error("Network response was not ok");
       }
       const answer2 = await result2.json();
@@ -126,6 +147,7 @@ export async function checkActionByTheme(
       const audioUrl = URL.createObjectURL(audioBlob);
 
       handleSetAudioSrc(audioUrl);
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       return answer2;
     }
   } catch (error) {
