@@ -58,7 +58,7 @@ export async function checkActionByTheme(
 
     const payload = JSON.stringify(payloadObj);
 
-    response = await fetch("https://85.65.185.254:8000/process", {
+    response = await fetch("https://85.65.185.254/process", {
       method: "POST",
       Authorization: `Bearer ${token}`,
 
