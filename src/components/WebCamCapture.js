@@ -11,9 +11,10 @@ import { checkFaceRecognition } from "../actions/checkFaceRecognition.js";
 import { checkActionByTheme } from "../actions/checkActionByTheme.js";
 
 import Button from "@mui/material/Button";
+
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
-const actx = new AudioContext();
+
 const onSubmit = async () => {
   await fetch("https://izabellaaibackend-xisces6vkq-lm.a.run.app/email", {
     method: "POST",
@@ -35,6 +36,10 @@ const WebcamCapture = () => {
   const [blocker, setBlocker] = useState(false);
 
   const [counter, setCounter] = useState({ water: 0, agitation: 0 });
+
+  // const handleReset = () => {
+  //   setRunning((prev) => !prev);
+  // };
 
   const handleSetAudioSrc = async (audioSrc) => {
     if (!blocker) {
@@ -91,6 +96,9 @@ const WebcamCapture = () => {
           index: 2,
         });
 
+        // if (counter.water === 2) {
+        //   await onSubmit();
+        // }
         await checkActionByTheme(props, {
           theme: "water",
           isNoUsed: true,
@@ -116,6 +124,7 @@ const WebcamCapture = () => {
           isCountered: false,
         });
         await new Promise((resolve) => setTimeout(resolve, 2000));
+        // setFrameCount((prev) => prev + 1);
       } catch (error) {
         console.error("There was a problem with the fetch operation:", error);
       }
@@ -133,13 +142,8 @@ const WebcamCapture = () => {
       }
     };
 
-    runRepeatedFunction();
-    // Added missing return cleanup function
-    return () => {
-      setRunning(false);
-    };
-  }, [running, capture]);
-
+    return () => runRepeatedFunction();
+  }, [running]);
   const AudioGonevo = useMemo(() => {
     return (
       <Paper>
@@ -153,13 +157,6 @@ const WebcamCapture = () => {
       </Paper>
     );
   }, [audioSrc]);
-
-  const initializeSound = () => {
-    actx.resume().then(() => {
-      console.log("Playback resumed successfully");
-    });
-  };
-
   return (
     <div>
       <Typography>{actionFinState}</Typography>
@@ -186,7 +183,6 @@ const WebcamCapture = () => {
       >
         {language === "en-EN" ? "Сменить язык на Русский" : "Switch to English"}
       </Button>
-      <Button onClick={initializeSound}>Initialize Sound</Button>
     </div>
   );
 };
