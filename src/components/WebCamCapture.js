@@ -28,18 +28,13 @@ const onSubmit = async () => {
 
 const WebcamCapture = () => {
   const webcamRef = useRef(null);
-
-  useEffect(() => {
-    audio.current.playbackRate = 1.5;
-    audio.current.volume = 0.8;
-  }, []);
   const [running, setRunning] = useState(true);
 
   const [actionFinState, setActionFinState] = useState("");
   const [language, setLanguage] = useState("ru-RU");
   const [audioSrc, setAudioSrc] = useState(null);
   const [blocker, setBlocker] = useState(false);
-  const audio = useRef(new Audio(audioSrc));
+
   const [counter, setCounter] = useState({ water: 0, agitation: 0 });
 
   // const handleReset = () => {
@@ -150,18 +145,15 @@ const WebcamCapture = () => {
     return () => runRepeatedFunction();
   }, [running]);
   const AudioGonevo = useMemo(() => {
-    // audio.current.src = audioSrc;
-    // await audio.current.play();
     return (
       <Paper>
-        {/* <audio
+        <audio
           src={audioSrc}
           autoPlay
           onEnded={() => {
             setBlocker(false);
           }}
-        /> */}
-        <iframe src={audioSrc} allow="autoplay"></iframe>
+        />
       </Paper>
     );
   }, [audioSrc]);
