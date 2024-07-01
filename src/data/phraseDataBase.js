@@ -77,8 +77,7 @@ export const phraseDataBase = {
       ],
     },
     facerecognition: {
-      question:
-        "is a person on the left picture same person as a person on the right picture? Answer only with name (that is a name of image of recognised person) or no",
+      question: "are they the same person?",
       yes: [
         "Good to see you ,",
         "How are you doing , ",
@@ -97,7 +96,7 @@ export const phraseDataBase = {
     voice: "ru-RU-Wavenet-D",
     water: {
       question:
-        "does a person on the photo drink water? Answer with only yes or no",
+        "does photo contain a drinking person? Answer with only yes or no",
       no: [
         "Не хочешь выпить стакан воды?",
         "Тебе не нужна вода? Могу налить.",
@@ -125,7 +124,7 @@ export const phraseDataBase = {
     },
     agitation: {
       question:
-        "does a person on the photo look agitated? Answer with only yes or no",
+        "does photo contain a agitated person? Answer with only yes or no",
       yes: [
         "Спокойствие, только спокойствие.",
         "Попробуйте расслабиться и успокоиться.",
@@ -140,7 +139,8 @@ export const phraseDataBase = {
       ],
     },
     laughing: {
-      question: "does a person on the photo laugh? Answer with only yes or no",
+      question:
+        "does photo contain a laughing person?? Answer with only yes or no",
       yes: [
         "Смех продлевает жизнь!",
         "Смейтесь и будьте счастливы!",
@@ -155,7 +155,8 @@ export const phraseDataBase = {
       ],
     },
     smoking: {
-      question: "does a person on the photo smoke? Answer with only yes or no",
+      question:
+        "does photo contain a smoking person? Answer with only yes or no",
       yes: [
         "Курение вредит вашему здоровью, пожалуйста, подумайте о броске.",
         "Курение вредно для вашего здоровья, пожалуйста, подумайте о броске.",

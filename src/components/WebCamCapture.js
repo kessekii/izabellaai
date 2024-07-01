@@ -26,12 +26,14 @@ const onSubmit = async () => {
   });
 };
 
-const WebcamCapture = () => {
+const WebcamCapture = (setting) => {
+  const { language, facerecognition, water, agitation, smoking, laughing } =
+    setting.settings;
   const webcamRef = useRef(null);
   const [running, setRunning] = useState(true);
 
   const [actionFinState, setActionFinState] = useState("");
-  const [language, setLanguage] = useState("ru-RU");
+
   const [audioSrc, setAudioSrc] = useState(null);
   const [blocker, setBlocker] = useState(false);
 
@@ -64,72 +66,85 @@ const WebcamCapture = () => {
     if (imageSrc && running && !blocker) {
       try {
         const props = {
-          token,
-          handleSetAudioSrc,
-          setCounter,
-          setBlocker,
-          language,
-          counter,
-          webcamRef,
-          setActionFinState,
+          token: token,
+          handleSetAudioSrc: handleSetAudioSrc,
+          setCounter: setCounter,
+          setBlocker: setBlocker,
+          language: language,
+          counter: counter,
+          webcamRef: webcamRef,
+          setActionFinState: setActionFinState,
         };
+        if (facerecognition) {
+          await checkFaceRecognition(props, {
+            theme: "facerecognition",
+            isNoUsed: false,
+            isCountered: false,
 
-        await checkFaceRecognition(props, {
-          theme: "facerecognition",
-          isNoUsed: false,
-          isCountered: false,
+            index: 0,
+          });
+          await checkFaceRecognition(props, {
+            theme: "facerecognition",
+            isNoUsed: false,
+            isCountered: false,
 
-          index: 0,
-        });
-        await checkFaceRecognition(props, {
-          theme: "facerecognition",
-          isNoUsed: false,
-          isCountered: false,
+            index: 1,
+          });
+          await checkFaceRecognition(props, {
+            theme: "facerecognition",
+            isNoUsed: false,
+            isCountered: false,
 
-          index: 1,
-        });
-        await checkFaceRecognition(props, {
-          theme: "facerecognition",
-          isNoUsed: false,
-          isCountered: false,
-
-          index: 2,
-        });
+            index: 2,
+          });
+        }
 
         // if (counter.water === 2) {
         //   await onSubmit();
         // }
-        await checkActionByTheme(props, {
-          theme: "water",
-          isNoUsed: true,
-          isCountered: true,
-          maxCounter: 3,
-        });
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-        await checkActionByTheme(props, {
-          theme: "laughing",
-          isNoUsed: false,
-          isCountered: false,
-        });
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-        await checkActionByTheme(props, {
-          theme: "smoking",
-          isNoUsed: false,
-          isCountered: false,
-        });
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-        await checkActionByTheme(props, {
-          theme: "agitation",
-          isNoUsed: false,
-          isCountered: false,
-        });
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        if (water) {
+          await checkActionByTheme(props, {
+            theme: "water",
+            isNoUsed: true,
+            isCountered: true,
+            maxCounter: 3,
+          });
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+        }
+
+        if (laughing) {
+          await checkActionByTheme(props, {
+            theme: "laughing",
+            isNoUsed: false,
+            isCountered: false,
+          });
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+        }
+
+        if (smoking) {
+          await checkActionByTheme(props, {
+            theme: "smoking",
+            isNoUsed: false,
+            isCountered: false,
+          });
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+        }
+
+        if (agitation) {
+          await checkActionByTheme(props, {
+            theme: "agitation",
+            isNoUsed: false,
+            isCountered: false,
+          });
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+        }
+
         // setFrameCount((prev) => prev + 1);
       } catch (error) {
         console.error("There was a problem with the fetch operation:", error);
       }
     }
-  }, [language, blocker, counter]);
+  }, [blocker, counter]);
 
   useEffect(() => {
     const runRepeatedFunction = async () => {
@@ -169,20 +184,6 @@ const WebcamCapture = () => {
       />
 
       {AudioGonevo}
-      <Button
-        onClick={() => {
-          setLanguage((prev) => {
-            if (prev === "en-EN") {
-              return "ru-RU";
-            } else {
-              return "en-EN";
-            }
-          });
-          setRunning((prev) => !prev);
-        }}
-      >
-        {language === "en-EN" ? "Сменить язык на Русский" : "Switch to English"}
-      </Button>
     </div>
   );
 };
