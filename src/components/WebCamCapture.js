@@ -36,32 +36,32 @@ const WebcamCapture = (setting) => {
 
   const [audioSrc, setAudioSrc] = useState(null);
   const [blocker, setBlocker] = useState(false);
-
+  const [audioData, setAudioData] = useState("");
   const [counter, setCounter] = useState({ water: 0, agitation: 0 });
 
   // const handleReset = () => {
   //   setRunning((prev) => !prev);
   // };
-
+  useEffect(() => {
+    if (audioData) {
+      let audio = new Audio(audioData);
+      audio.play();
+    }
+  }, [audioData]);
   const handleSetAudioSrc = async (audioSrc) => {
     if (!blocker) {
-      setBlocker(true);
+      setBlocker(false);
       setAudioSrc(audioSrc);
-      while (blocker) {
-        await new Promise((resolve) => setTimeout(resolve, 500));
-      }
+      // while (blocker) {
+      //   await new Promise((resolve) => setTimeout(resolve, 500));
+      // }
     }
   };
 
   const capture = useCallback(async () => {
-    const tokenResp = await fetch(
-      "https://izabellaaibackend-xisces6vkq-lm.a.run.app/auth-token",
-      {
-        method: "GET",
-        origin: "https://fronteu-xisces6vkq-lm.a.run.app",
-      }
-    );
-    const token = await tokenResp.json();
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    const token =
+      "AAAAAAAAAAAAAAAAAAAAAMLheAAAAAAA0%2BuSeid%2BULvsea4JtiGRiSDSJSI%3DEUifiRBkKG5E2XzMDjRfl76ZC9Ub0wnz4XsNiRVBChTYbJcE3F";
     const imageSrc = webcamRef.current.getScreenshot();
     if (imageSrc && running && !blocker) {
       try {
@@ -83,6 +83,7 @@ const WebcamCapture = (setting) => {
 
             index: 0,
           });
+          await new Promise((resolve) => setTimeout(resolve, 2000));
           await checkFaceRecognition(props, {
             theme: "facerecognition",
             isNoUsed: false,
@@ -90,6 +91,7 @@ const WebcamCapture = (setting) => {
 
             index: 1,
           });
+          await new Promise((resolve) => setTimeout(resolve, 2000));
           await checkFaceRecognition(props, {
             theme: "facerecognition",
             isNoUsed: false,
@@ -97,11 +99,12 @@ const WebcamCapture = (setting) => {
 
             index: 2,
           });
+          await new Promise((resolve) => setTimeout(resolve, 2000));
         }
 
-        // if (counter.water === 2) {
-        //   await onSubmit();
-        // }
+        if (counter.water === 2) {
+          await onSubmit();
+        }
         if (water) {
           await checkActionByTheme(props, {
             theme: "water",
@@ -166,7 +169,7 @@ const WebcamCapture = (setting) => {
           src={audioSrc}
           autoPlay
           onEnded={() => {
-            setBlocker(false);
+            // setBlocker(false);
           }}
         />
       </Paper>

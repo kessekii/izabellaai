@@ -26,7 +26,7 @@ const App = () => {
     agitation: true,
     smoking: true,
     laughing: true,
-    language: "ru-RU",
+    language: "en",
   });
 
   const initializeSound = async () => {
@@ -126,8 +126,8 @@ const App = () => {
               fullWidth
               variant="outlined"
             >
-              <MenuItem value="ru-RU">Russian (ru-RU)</MenuItem>
-              <MenuItem value="en-EN">English (en-EN)</MenuItem>
+              <MenuItem value="ru">Russian (ru-RU)</MenuItem>
+              <MenuItem value="en">English (en-EN)</MenuItem>
               {/* Add more language options as needed */}
             </Select>
           </Box>
