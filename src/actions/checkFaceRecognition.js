@@ -21,48 +21,42 @@ export const checkFaceRecognition = async (
   { theme, isNoUsed, isCountered, index, maxCounter = 3 }
 ) => {
   const imageSrc = webcamRef.current.getScreenshot();
-  const loadImage = (src) => {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      img.onload = () => resolve(img);
-      img.onerror = reject;
-      img.src = src;
-    });
-  };
+
   console.log("Fetching person images...");
   // const resp = await fetch(
   //   "https://izabellaaibackend-xisces6vkq-lm.a.run.app/get-persons",
-
-  let secImgsrc = "";
-  if (index === 0) {
-    secImgsrc = peter;
-  }
-  if (index === 1) {
-    secImgsrc = roma;
-  }
-  if (index === 2) {
-    secImgsrc = izabella;
-  }
-
-  const combined = await combineImages(imageSrc, secImgsrc);
-  const payloadObj = {
-    image: combined.split(",")[1],
-    text: phraseDataBase[language][theme].question,
+  const cropPayload = {
+    image: imageSrc.split(",")[1],
   };
-  const payload = JSON.stringify(payloadObj);
 
-  const response = await fetch("https://85.65.185.254/process", {
+  const cropResponce = await fetch("https://85.65.185.254/facecrop", {
     method: "POST",
-    Authorization: `Bearer ${token}`,
 
     headers: {
       "Content-Type": "application/json",
     },
 
-    body: payload,
+    body: JSON.stringify(cropPayload),
+  });
+  const responseData = (await cropResponce.json()).image;
+
+  const payloadObj = {
+    image: responseData,
+
+    name: database[index].name["en"].toLowerCase(),
+  };
+
+  const compareResponce = await fetch("https://85.65.185.254/compare", {
+    method: "POST",
+
+    headers: {
+      "Content-Type": "application/json",
+    },
+
+    body: JSON.stringify(payloadObj),
   });
 
-  if (!response.ok) {
+  if (!compareResponce.ok) {
     console.log(theme, "error");
 
     setActionFinState(() => "theme : " + theme + " error");
@@ -70,7 +64,7 @@ export const checkFaceRecognition = async (
     throw new Error("Network response was not ok");
   }
 
-  const answer = (await response.json()).answer;
+  const answer = (await compareResponce.json()).answer;
   console.log(theme, ": ", answer);
   setActionFinState(() => "theme : " + theme + " succeded: " + answer);
   if (isNoUsed && answer.includes("no")) {

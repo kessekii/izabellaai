@@ -11,15 +11,15 @@ export const resizeImage = async (base64Image1) => {
   };
 
   const canvas = document.createElement("canvas");
-  canvas.width = 720;
-  canvas.height = 576;
+  canvas.width = 300;
+  canvas.height = 240;
   const ctx = canvas.getContext("2d");
 
   try {
     const img1 = await loadImage(base64Image1);
 
     // Draw the first image resized to 125x125
-    ctx.drawImage(img1, 0, 0, 720, 576);
+    ctx.drawImage(img1, 0, 0, 300, 240);
     // Draw the second image resized to 125x125, positioned next to the first image
 
     return canvas.toDataURL(); // Return the combined image as a base64 string
@@ -58,15 +58,15 @@ export const combineImages = async (base64Image1, base64Image2) => {
   }
 };
 export const voiceTheAction = async (
-  action,
+  answer,
   language,
   theme,
   handleSetAudioSrc,
   nameString
 ) => {
-  const randomIndex = Math.floor(
-    Math.random() * phraseDataBase[language][theme][action]?.length || 1
-  );
+  // const randomIndex = Math.floor(
+  //   Math.random() * phraseDataBase[language][theme][action]?.length || 1
+  // );
   //   const generatorPhrase =
   //     phraseDataBase[language][theme][action][randomIndex] +
   //     " reformulate this phrase in a free manner";
@@ -95,8 +95,10 @@ export const voiceTheAction = async (
   //     body: JSON.stringify(payloadObj),
   //   });
   const payload = {
-    text: phraseDataBase[language][theme][action][randomIndex] + nameString,
+    theme: theme,
+    answer: answer,
     language: language,
+    name: nameString,
   };
 
   const result2 = await fetch("https://85.65.185.254/voice", {

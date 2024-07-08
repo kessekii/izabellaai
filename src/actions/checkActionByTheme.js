@@ -17,22 +17,41 @@ export async function checkActionByTheme(
   { theme, isNoUsed, isCountered, maxCounter = 3 }
 ) {
   try {
-    let imageSrc = webcamRef.current.getScreenshot();
+    const imageSrc = webcamRef.current.getScreenshot({
+      width: 200,
+      hight: 149.9213,
+    });
+    const cropPayload = {
+      image: imageSrc.split(",")[1],
+    };
+    const cropPayloadString = JSON.stringify(cropPayload);
+    const cropResponce = await fetch("https://85.65.185.254/facecrop", {
+      method: "POST",
 
-    const phrase = phraseDataBase[language][theme].question.toString();
+      headers: {
+        "Content-Type": "application/json",
+      },
+
+      body: cropPayloadString,
+    });
+    const croppedImage = (await cropResponce.json()).image;
+    // const phrase = phraseDataBase[language][theme].question.toString();
     let response;
-    const resizedImage = await resizeImage(imageSrc);
+    const resizedImage = await resizeImage(croppedImage);
+    if (!resizedImage) {
+      throw new Error("Image resize failed");
+    }
+
     const payloadObj = {
       image: resizedImage.split(",")[1],
-
-      text: phrase,
+      language: language,
+      theme: theme,
     };
 
     const payload = JSON.stringify(payloadObj);
 
     response = await fetch("https://85.65.185.254/process", {
       method: "POST",
-      Authorization: `Bearer ${token}`,
 
       headers: {
         "Content-Type": "application/json",

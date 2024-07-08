@@ -62,7 +62,10 @@ const WebcamCapture = (setting) => {
     await new Promise((resolve) => setTimeout(resolve, 2000));
     const token =
       "AAAAAAAAAAAAAAAAAAAAAMLheAAAAAAA0%2BuSeid%2BULvsea4JtiGRiSDSJSI%3DEUifiRBkKG5E2XzMDjRfl76ZC9Ub0wnz4XsNiRVBChTYbJcE3F";
-    const imageSrc = webcamRef.current.getScreenshot();
+    const imageSrc = webcamRef.current.getScreenshot({
+      width: 200,
+      hight: 149.9213,
+    });
     if (imageSrc && running && !blocker) {
       try {
         const props = {
@@ -182,8 +185,8 @@ const WebcamCapture = (setting) => {
         audio={false}
         ref={webcamRef}
         screenshotFormat="image/jpeg"
-        width="100%"
-        height="auto"
+        width="300px"
+        height="250px"
       />
 
       {AudioGonevo}
