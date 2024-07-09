@@ -1,18 +1,13 @@
 import { resizeImage, getSentence } from "./helpers.js";
 
-export const checkFaceRecognition = async (
-  {
-    handleSetAudioSrc,
-    setCounter,
-
-    language,
-    counter,
-    webcamRef,
-
-    setActionFinState,
-  },
-  {}
-) => {
+export const checkFaceRecognition = async ({
+  handleSetAudioSrc,
+  setCounter,
+  language,
+  counter,
+  webcamRef,
+  setActionFinState,
+}) => {
   const imageSrc = webcamRef.current.getScreenshot();
   const image = await resizeImage(imageSrc);
   console.log("Fetching person images...");
@@ -59,7 +54,7 @@ export const checkFaceRecognition = async (
   if (answer !== "no") {
     if (
       (counter && !counter[answer]) ||
-      (counter[answer] && counter[answer] == 0)
+      (counter[answer] && counter[answer] === 0)
     ) {
       const newCounter = Object.assign({}, { ...counter, [answer]: 2 });
       console.log("newCounter", newCounter);
@@ -87,21 +82,3 @@ export const checkFaceRecognition = async (
       counter[answer]
   );
 };
-
-// const generateInstances = async (imagesr, image, language) => {
-//   try {
-//     console.log("Combining images for instance...");
-//     const combiner = await combineImages(imagesr, image, 880, 880);
-
-//     if (combiner.split(",")[0] !== "data:image/jpeg;base64") {
-//       console.error("Failed to combine images");
-//       return;
-//     }
-//     return {
-//       text: phraseDataBase[language]["facerecognition"].question,
-//       image: combiner.split(",")[1],
-//     };
-//   } catch (error) {
-//     console.error("Error generating instance:", error);
-//   }
-// };

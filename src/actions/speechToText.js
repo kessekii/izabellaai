@@ -1,16 +1,13 @@
-export const speechToText = async (audioRecordData) => {
-  const audioData = await convertBlobToBase64(audioRecordData);
-  const payloadJson = JSON.stringify({
-    audio: audioData,
-  });
-  const payload = JSON.stringify(payloadJson);
-  console.log("payload", payload);
+export const speechToText = async (audioBlob) => {
+  //   const audioData = await convertBlobToBase64(audioRecordData);
+
+  console.log("payload", audioBlob);
   const response = await fetch("https://85.65.185.254/speech", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: payload,
+    body: audioBlob,
   });
   const answer = await response.json();
   console.log(answer);

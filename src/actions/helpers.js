@@ -61,10 +61,14 @@ export const getSentence = async (
   theme,
   language,
   nameString,
-  handleSetAudioSrc
+  handleSetAudioSrc,
+  transcribed_sentence
 ) => {
   if (!nameString || nameString === "") {
     nameString = "";
+  }
+  if (!transcribed_sentence || transcribed_sentence === "") {
+    transcribed_sentence = "";
   }
 
   const payload = {
@@ -72,6 +76,7 @@ export const getSentence = async (
     language: language,
     theme: theme,
     name: nameString,
+    transcribed_sentence: transcribed_sentence,
   };
 
   const result2 = await fetch("https://85.65.185.254/getSentence", {
@@ -96,15 +101,11 @@ export const getSentence = async (
   const answerArray = answerSent.answer;
   console.log(answerArray);
   await new Promise((resolve) => setTimeout(resolve, 2000));
-  const audioUrl = await voiceTheAction(
-    answerArray,
-    language,
-    handleSetAudioSrc
-  );
-
+  const audioUrl = await voiceTheAction(answerArray, language);
+  handleSetAudioSrc(audioUrl);
   return audioUrl;
 };
-export const voiceTheAction = async (answer, language, handleSetAudioSrc) => {
+export const voiceTheAction = async (answer, language) => {
   const anwer_ready = answer;
 
   const paylpad2 = JSON.stringify({
