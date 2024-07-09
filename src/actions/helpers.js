@@ -57,56 +57,68 @@ export const combineImages = async (base64Image1, base64Image2) => {
     console.error("Error loading images:", error);
   }
 };
-export const voiceTheAction = async (
-  action,
-  language,
+export const getSentence = async (
   theme,
-  handleSetAudioSrc,
-  nameString
+  language,
+  nameString,
+  handleSetAudioSrc
 ) => {
-  const randomIndex = Math.floor(
-    Math.random() * phraseDataBase[language][theme][action]?.length || 1
-  );
-  //   const generatorPhrase =
-  //     phraseDataBase[language][theme][action][randomIndex] +
-  //     " reformulate this phrase in a free manner";
-
-  //   const imageTemplate =
-  //     "/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAMCAgICAgMCAgIDAwMDBAYEBAQEBAgGBgUGCQgKCgkICQkKDA8MCgsOCwkJDRENDg8QEBEQCgwSExIQEw8QEBD/2wBDAQMDAwQDBAgEBAgQCwkLEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBD/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAj/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAABwn/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdAAYqm//Z";
-  //   const resizedImage = await resizeImage(imageTemplate);
-  //   const payloadObj = {
-  //     image: resizedImage,
-  //     text: generatorPhrase,
-  //   };
   if (!nameString || nameString === "") {
     nameString = "";
   }
 
-  const token =
-    "AAAAAAAAAAAAAAAAAAAAAMLheAAAAAAA0%2BuSeid%2BULvsea4JtiGRiSDSJSI%3DEUifiRBkKG5E2XzMDjRfl76ZC9Ub0wnz4XsNiRVBChTYbJcE3F";
-  //   const response = await fetch("https://85.65.185.254/process", {
-  //     method: "POST",
-  //     Authorization: `Bearer ${token}`,
-
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-
-  //     body: JSON.stringify(payloadObj),
-  //   });
   const payload = {
-    text: phraseDataBase[language][theme][action][randomIndex] + nameString,
+    // text: phraseDataBase[language][theme][action][randomIndex] + nameString,
     language: language,
+    theme: theme,
+    name: nameString,
   };
 
-  const result2 = await fetch("https://85.65.185.254/voice", {
+  const result2 = await fetch("https://85.65.185.254/getSentence", {
     method: "POST",
-    Authorization: `Bearer ${token}`,
 
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(payload),
+  });
+
+  if (!result2.ok) {
+    console.log(result2);
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    throw new Error("Network response was not ok");
+  }
+
+  const answerData = result2.body;
+
+  const answerSent = await result2.json();
+
+  const answerArray = answerSent.answer;
+  console.log(answerArray);
+  await new Promise((resolve) => setTimeout(resolve, 2000));
+  const audioUrl = await voiceTheAction(
+    answerArray,
+    language,
+    handleSetAudioSrc
+  );
+
+  return audioUrl;
+};
+export const voiceTheAction = async (answer, language, handleSetAudioSrc) => {
+  const anwer_ready = answer;
+
+  const paylpad2 = JSON.stringify({
+    answer: answer,
+    language: language,
+  });
+  console.log(paylpad2);
+  const result2 = await fetch("https://85.65.185.254/voice", {
+    method: "POST",
+
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: paylpad2,
   });
 
   if (!result2.ok) {
@@ -123,7 +135,6 @@ export const voiceTheAction = async (
   );
   const url = URL.createObjectURL(audioBlob);
   // console.log("here", url);
-  handleSetAudioSrc(url);
-  await new Promise((resolve) => setTimeout(resolve, 2000));
-  return result2;
+
+  return url;
 };

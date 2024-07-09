@@ -1,104 +1,91 @@
-import { database } from "../data/peopleDataBase.js";
-import { phraseDataBase } from "../data/phraseDataBase.js";
-import { Base64 } from "js-base64";
-import { resizeImage, combineImages, voiceTheAction } from "./helpers.js";
-import peter from "../data/images/peter.jpg";
-import roma from "../data/images/roma.jpg";
-import izabella from "../data/images/izabella.jpg";
+import { resizeImage, getSentence } from "./helpers.js";
 
 export const checkFaceRecognition = async (
   {
-    token,
     handleSetAudioSrc,
     setCounter,
-    setBlocker,
+
     language,
     counter,
     webcamRef,
 
     setActionFinState,
   },
-  { theme, isNoUsed, isCountered, index, maxCounter = 3 }
+  {}
 ) => {
   const imageSrc = webcamRef.current.getScreenshot();
-  const loadImage = (src) => {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      img.onload = () => resolve(img);
-      img.onerror = reject;
-      img.src = src;
-    });
-  };
+  const image = await resizeImage(imageSrc);
   console.log("Fetching person images...");
   // const resp = await fetch(
   //   "https://izabellaaibackend-xisces6vkq-lm.a.run.app/get-persons",
-
-  let secImgsrc = "";
-  if (index === 0) {
-    secImgsrc = peter;
-  }
-  if (index === 1) {
-    secImgsrc = roma;
-  }
-  if (index === 2) {
-    secImgsrc = izabella;
-  }
-
-  const combined = await combineImages(imageSrc, secImgsrc);
-  const payloadObj = {
-    image: combined.split(",")[1],
-    text: phraseDataBase[language][theme].question,
+  const cropPayload = {
+    image: image.split(",")[1],
   };
-  const payload = JSON.stringify(payloadObj);
 
-  const response = await fetch("https://85.65.185.254/process", {
+  const cropResponce = await fetch("https://85.65.185.254/facecrop", {
     method: "POST",
-    Authorization: `Bearer ${token}`,
 
     headers: {
       "Content-Type": "application/json",
     },
 
-    body: payload,
+    body: JSON.stringify(cropPayload),
+  });
+  const responseData = (await cropResponce.json()).image;
+
+  const payloadObj = {
+    image: responseData,
+  };
+
+  const compareResponce = await fetch("https://85.65.185.254/recognize", {
+    method: "POST",
+
+    headers: {
+      "Content-Type": "application/json",
+    },
+
+    body: JSON.stringify(payloadObj),
   });
 
-  if (!response.ok) {
-    console.log(theme, "error");
-
-    setActionFinState(() => "theme : " + theme + " error");
+  if (!compareResponce.ok) {
+    setActionFinState(() => "theme : " + "facerecognition" + " error");
     await new Promise((resolve) => setTimeout(resolve, 2000));
     throw new Error("Network response was not ok");
   }
 
-  const answer = (await response.json()).answer;
-  console.log(theme, ": ", answer);
-  setActionFinState(() => "theme : " + theme + " succeded: " + answer);
-  if (isNoUsed && answer.includes("no")) {
-    if (isCountered) {
+  const answer = (await compareResponce.json()).answer;
+
+  console.log(answer, counter);
+  if (answer !== "no") {
+    if (
+      (counter && !counter[answer]) ||
+      (counter[answer] && counter[answer] == 0)
+    ) {
+      const newCounter = Object.assign({}, { ...counter, [answer]: 2 });
+      console.log("newCounter", newCounter);
+      setCounter(newCounter);
+      const audioUrl = await getSentence(
+        "facerecognition",
+        language,
+        answer,
+        handleSetAudioSrc
+      );
+      handleSetAudioSrc(audioUrl);
+    } else {
       setCounter(
-        Object.assign({}, { ...counter, [theme]: counter[theme] + 1 })
+        Object.assign({}, { ...counter, [answer]: counter[answer] - 1 })
       );
     }
-
-    if (isCountered && counter[theme] >= maxCounter - 1) {
-      await voiceTheAction(answer, language, theme, handleSetAudioSrc);
-      setCounter({}, { ...counter, [theme]: 0 });
-    }
   }
-  console.log(answer);
-  if (answer.includes("yes")) {
-    const nameString = database[index].name[language];
-    await voiceTheAction(
-      answer,
-      language,
-      theme,
-      handleSetAudioSrc,
-      nameString
-    );
-    if (counter[theme] > 0) {
-      setCounter(Object.assign({}, { ...counter, [theme]: 0 }));
-    }
-  }
+  setActionFinState(
+    () =>
+      "theme : " +
+      "facerecognition" +
+      " succeded: " +
+      answer +
+      ": " +
+      counter[answer]
+  );
 };
 
 // const generateInstances = async (imagesr, image, language) => {

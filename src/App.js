@@ -128,6 +128,7 @@ const App = () => {
             >
               <MenuItem value="ru">Russian (ru-RU)</MenuItem>
               <MenuItem value="en">English (en-EN)</MenuItem>
+              <MenuItem value="he">Hebrew (he-IL)</MenuItem>
               {/* Add more language options as needed */}
             </Select>
           </Box>
