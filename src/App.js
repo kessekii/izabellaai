@@ -57,7 +57,6 @@ const App = ({ themeref }) => {
     setIsDarkMode(!isDarkMode);
     themeref = !isDarkMode;
     const toggle = document.querySelector("#toggle");
-    toggle.toggleTheme();
   };
   const theme = isDarkMode ? darkTheme : lightTheme;
   // Use effect to apply or remove dark mode
