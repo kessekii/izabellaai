@@ -231,7 +231,7 @@ const App = ({ themeref }) => {
             onClick={initializeSound}
             sx={{ margin: "20px" }}
           >
-            Start
+            BEGIN
           </Button>
           <SettingsComponent />
         </Paper>
