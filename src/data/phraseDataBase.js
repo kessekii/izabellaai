@@ -1,182 +1,110 @@
 export const phraseDataBase = {
   en: {
     voice: "en-GB-Wavenet-D",
-    water: {
+    drinking: {
       question:
-        "Is the person in the last photo actively drinking water? Answer with only 'yes' or 'no'.",
-      no: [
-        "Don't forget to drink some water!",
-        "Stay hydrated, have a glass of water.",
-        "Remember to sip some water throughout the day.",
-        "How about a refreshing glass of water?",
-        "Your body needs water, take a drink!",
-        "Quench your thirst with some water.",
-        "A glass of water will do you good.",
-        "Time to hydrate, drink some water.",
-        "Keep yourself hydrated, have some water.",
-        "A quick water break could be just what you need.",
-      ],
-      yes: [
-        "Thank you for taking care of yourself and drinking water!",
-        "I appreciate you staying hydrated!",
-        "Thanks for making hydration a priority!",
-        "Thank you for drinking water and staying healthy.",
-        "I'm glad you had some water, thank you!",
-        "Thanks for keeping yourself hydrated!",
-        "Your health is important, thank you for drinking water!",
-        "Thanks for sipping on some water!",
-        "I appreciate you for drinking water and staying refreshed!",
-        "Thank you for making the healthy choice to drink water!",
-      ],
+        "Is the person in the last photo actively drinking drinking? Answer with only 'yes' or 'no'.",
+      no: ["Don't forget to drink some water!"],
+      yes: ["Thank you for taking care of yourself and drinking!"],
+    },
+    misc: {
+      generation:
+        "Mode in which the system generates a new sentence based on the last photo taken, reacts to familiar people, has ability to understand and reply to human speech.",
+      monotone:
+        "Mode in which the system repeats the same sentence verifying the possible actions one by one. (LEGACY mode)",
+      scheduler:
+        "Mode in which user can generate his own schedule of actions and the system will remind him about them.",
     },
     agitation: {
       question:
         "Is the person in the last photo visibly agitated? Answer with only 'yes' or 'no'.",
-      yes: [
-        "Take a deep breath and relax.",
-        "Try to relax and take it easy.",
-        "Take a moment to relax and unwind.",
-        "Relax and take a break.",
-        "Try to relax and calm down.",
-        "Take a deep breath and try to relax.",
-        "Relax and take a moment for yourself.",
-        "Try to relax and let go of tension.",
-        "Take a deep breath and relax your mind.",
-        "Relax and take a moment to breathe.",
-      ],
+      yes: ["Take a deep breath and relax."],
     },
     laughing: {
       question:
         "Is the person in the last photo laughing? Answer with only 'yes' or 'no'.",
-      yes: [
-        "Laughter is the best medicine!",
-        "Keep laughing and stay happy!",
-        "Laughter is good for the soul.",
-        "Laughter is contagious, keep it up!",
-        "A good laugh can brighten your day.",
-        "Laughter is the key to happiness.",
-        "Keep laughing and enjoy the moment.",
-        "Laughter is the best way to spread joy.",
-        "Laughter is a sign of happiness.",
-        "Keep laughing and enjoy the moment.",
-      ],
+      yes: ["Laughter is the best medicine!"],
     },
     smoking: {
       question:
         "Is the person in the last photo currently smoking a cigarette, cigar, or other smoking device? Answer with only 'yes' or 'no'.",
-      yes: [
-        "Smoking is harmful to your health, please consider quitting.",
-        "Smoking is bad for your health, please consider quitting.",
-        "Smoking can cause serious health problems, please consider quitting.",
-        "Smoking is a dangerous habit, please consider quitting.",
-        "Smoking is not good for your health, please consider quitting.",
-        "Smoking can lead to serious health issues, please consider quitting.",
-        "Smoking is harmful to your body, please consider quitting.",
-        "Smoking is a risky habit, please consider quitting.",
-        "Smoking can have negative effects on your health, please consider quitting.",
-        "Smoking is not good for you, please consider quitting.",
-      ],
+      yes: ["Smoking is harmful to your health, please consider quitting."],
     },
     facerecognition: {
       question: "Are they the same?",
-      yes: [
-        "Good to see you ,",
-        "How are you doing , ",
-        "Hello , ",
-        "Nice to meet you , ",
-        "Welcome , ",
-        "Greetings , ",
-        "It's you , ",
-        "Nice to see you , ",
-        "Hey , ",
-        "Hello there , ",
-      ],
+      yes: ["Good to see you ,"],
     },
   },
   ru: {
     voice: "ru-RU-Wavenet-D",
-    water: {
+    drinking: {
       question:
-        "Is the person in the last photo actively drinking water? Answer with only 'yes' or 'no'.",
-      no: [
-        "Не хочешь выпить стакан воды?",
-        "Тебе не нужна вода? Могу налить.",
-        "Может, выпьешь немного воды?",
-        "Хочешь стакан воды?",
-        "Не хочешь освежиться водой?",
-        "Как насчёт воды? Я могу принести.",
-        "Тебе нужно что-нибудь попить? Воды, например?",
-        "Ты не хочешь воды? Здесь есть свежая.",
-        "Выпей немного воды, если хочешь.",
-        "Тебе не нужна вода? Могу налить холодной.",
-      ],
-      yes: [
-        "Спасибо, что выпили воды!",
-        "Благодарю, что согласились выпить воду.",
-        "Спасибо, что утолили жажду.",
-        "Мы рады, что вы выпили воды.",
-        "Спасибо, что позаботились о себе и выпили воду.",
-        "Благодарим за то, что выпили воды.",
-        "Спасибо, что приняли наше предложение и выпили воду.",
-        "Мы очень благодарны, что вы выпили воды.",
-        "Спасибо, что поддержали наш совет и выпили воду.",
-        "Благодарим, что утолили жажду с помощью воды.",
-      ],
+        "Is the person in the last photo actively drinking drinking? Answer with only 'yes' or 'no'.",
+      no: ["Может, выпьешь немного воды?"],
+      yes: ["Спасибо, что выпили воды!"],
     },
     agitation: {
       question:
         "Is the person in the last photo visibly agitated? Answer with only 'yes' or 'no'.",
-      yes: [
-        "Спокойствие - это ключ к успеху.",
-        "Попробуйте расслабиться и успокоиться.",
-      ],
+      yes: ["Попробуйте расслабиться и успокоиться."],
     },
     laughing: {
       question:
         "Is the person in the last photo laughing? Answer with only 'yes' or 'no'.",
-      yes: [
-        "Смех продлевает жизнь!",
-        "Смейтесь и будьте счастливы!",
-        "Смех - это лучшее лекарство!",
-        "Смех - это залог хорошего настроения!",
-        "Хороший смех может поднять настроение!",
-        "Смех - это ключ к счастью!",
-        "Смейтесь и наслаждайтесь моментом!",
-        "Смех - лучший способ поднять настроение!",
-        "Смех - это признак счастья!",
-        "Смейтесь и наслаждайтесь моментом!",
-      ],
+      yes: ["Смех - это лучшее лекарство!"],
     },
     smoking: {
       question:
         "Is the person in the last photo currently smoking a cigarette, cigar, or other smoking device? Answer with only 'yes' or 'no'.",
-      yes: [
-        "Курение вредит вашему здоровью, пожалуйста, подумайте о броске.",
-        "Курение вредно для вашего здоровья, пожалуйста, подумайте о броске.",
-        "Курение может вызвать серьезные проблемы со здоровьем, пожалуйста, подумайте о броске.",
-        "Курение - опасная привычка, пожалуйста, подумайте о броске.",
-        "Курение не полезно для вашего здоровья, пожалуйста, подумайте о броске.",
-        "Курение может привести к серьезным проблемам со здоровьем, пожалуйста, подумайте о броске.",
-        "Курение вредно для вашего организма, пожалуйста, подумайте о броске.",
-        "Курение - рискованная привычка, пожалуйста, подумайте о броске.",
-        "Курение может оказать негативное воздействие на ваше здоровье, пожалуйста, подумайте о броске.",
-        "Курение не полезно для вас, пожалуйста, подумайте о броске.",
-      ],
+      yes: ["Курение вредит вашему здоровью, давай бросай!"],
     },
     facerecognition: {
       question: "Are they the same?",
-      yes: [
-        "Рад видеть вас,",
-        "Как у вас дела,",
-        "Привет,",
-        "Приятно снова встретиться ,",
-        "Добро пожаловать,",
-        "Приветствую,",
-        "Это ты,",
-        "Рад видеть вас,",
-        "Привет тебе,",
-        "Будь здоров,",
-      ],
+      yes: ["Привет,"],
+    },
+    misc: {
+      generation:
+        "Режим, в котором система генерирует новое предложение на основе последнего снимка, реагирует на знакомых людей, обладает способностью понимать и отвечать на человеческую речь.",
+      monotone:
+        "Режим, в котором система повторяет одно и то же предложение, проверяя возможные действия поочередно. ",
+      scheduler:
+        "Режим, в котором пользователь может создать свое собственное расписание действий, и система будет напоминать ему о них.",
+    },
+  },
+  he: {
+    voice: "he-IL-Wavenet-D",
+    drinking: {
+      question:
+        "Is the person in the last photo actively drinking drinking? Answer with only 'yes' or 'no'.",
+      no: ["אל תשכח לשתות מים!"],
+      yes: ["תודה ששתית מים!"],
+    },
+    agitation: {
+      question:
+        "Is the person in the last photo visibly agitated? Answer with only 'yes' or 'no'.",
+      yes: ["נשמע שאתה עצבני, נשמע שאתה צריך לנשום עמוק ולהירגע."],
+    },
+    laughing: {
+      question:
+        "Is the person in the last photo laughing? Answer with only 'yes' or 'no'.",
+      yes: ["צחוק הוא התרופה הכי טובה!"],
+    },
+    smoking: {
+      question:
+        "Is the person in the last photo currently smoking a cigarette, cigar, or other smoking device? Answer with only 'yes' or 'no'.",
+      yes: ["עישון מזיק לבריאותך, תשקול להפסיק."],
+    },
+    facerecognition: {
+      question: "Are they the same?",
+      yes: ["שלום,"],
+    },
+    misc: {
+      generation:
+        "מצב בו המערכת יוצרת משפט חדש בהתבסס על התמונה האחרונה, מגיבה לאנשים מוכרים, יש לה את היכולת להבין ולהגיב לדיבור של בני אדם.",
+      monotone:
+        "מצב בו המערכת חוזרת על אותו משפט ומאמתת את הפעולות האפשריות אחת אחת.",
+      scheduler:
+        "מצב בו המשתמש יכול ליצור סידור עבודה של פעולות והמערכת תזכיר לו עליהן.",
     },
   },
 };

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -24,11 +24,45 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
+    <style>
+      body.light-mode {
+        background-color: #ffffff; /* Light background color */
+        color: #000000; /* Light text color */
+      }
+      body.dark-mode {
+        background-color: #333333; /* Dark background color */
+        color: #ffffff; /* Dark text color */
+      }
+    </style>
     <title>React App</title>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
+    <script id="toggle">
+      function toggleTheme() {
+        // Check current theme
+        if (document.body.classList.contains("dark-mode")) {
+          document.body.classList.replace("dark-mode", "light-mode");
+        } else {
+          document.body.classList.replace("light-mode", "dark-mode");
+        }
+      }
+
+      // Example: Toggle theme on double-click anywhere on the page
+      document.addEventListener("dblclick", toggleTheme);
+
+      // Optionally, apply the theme based on user's system preference
+      // This will run once when the page loads
+      if (
+        window.matchMedia &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches
+      ) {
+        document.body.classList.add("dark-mode");
+      } else {
+        document.body.classList.add("light-mode");
+      }
+    </script>
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.

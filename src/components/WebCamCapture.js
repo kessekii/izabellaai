@@ -15,6 +15,9 @@ import Typography from "@mui/material/Typography";
 import Recorder from "./Recorder.js";
 import { checkFaceRecognition } from "../actions/checkFaceRecognition.js";
 import { checkAnalyzeMoment } from "../actions/checkAnalyzeMoment.js";
+import { checkActionByTheme } from "../actions/checkActionByTheme.js";
+import { scheduler_data } from "./Scheduler.js";
+import { phraseDataBase } from "../data/phraseDataBase.js";
 const onSubmit = async () => {
   await fetch("https://izabellaaibackend-xisces6vkq-lm.a.run.app/email", {
     method: "POST",
@@ -26,9 +29,8 @@ const onSubmit = async () => {
   });
 };
 
-const WebcamCapture = (setting) => {
-  const { language, facerecognition, water, agitation, smoking, laughing } =
-    setting.settings;
+const WebcamCapture = (setting, alarmSchedule, theme) => {
+  const { language, mode } = setting.settings;
   const webcamRef = useRef(null);
   const [running, setRunning] = useState(true);
 
@@ -36,20 +38,14 @@ const WebcamCapture = (setting) => {
 
   const [audioSrc, setAudioSrc] = useState(null);
   const [blocker, setBlocker] = useState(false);
-  const [audioData, setAudioData] = useState("");
-  const [audioRecordData, setAudioRecordData] = useState("");
+
   const [counter, setCounter] = useState({ water: 0, agitation: 0 });
   const [transcribedText, setTranscribedText] = useState("");
 
   // const handleReset = () => {
   //   setRunning((prev) => !prev);
   // };
-  useEffect(() => {
-    if (audioData) {
-      let audio = new Audio(audioData);
-      audio.play();
-    }
-  }, [audioData]);
+
   const handleSetAudioSrc = async (audioSrc) => {
     if (!blocker) {
       setBlocker(true);
@@ -59,12 +55,12 @@ const WebcamCapture = (setting) => {
       // }
     }
   };
-
+  let arrayOfTasks = [];
   const capture = useCallback(async () => {
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
     const imageSrc = webcamRef.current.getScreenshot();
-    if (imageSrc && running && !blocker) {
+    if (imageSrc && running && !blocker && mode === "generation") {
       try {
         const props = Object.assign(
           {},
@@ -90,6 +86,78 @@ const WebcamCapture = (setting) => {
         await checkAnalyzeMoment(props);
         await new Promise((resolve) => setTimeout(resolve, 2000));
         await checkAnalyzeMoment(props);
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+      } catch (error) {
+        console.error("There was a problem with the fetch operation:", error);
+      }
+    } else if (imageSrc && running && !blocker && mode === "scheduler") {
+      try {
+        console.log("scheduler");
+        const props = Object.assign(
+          {},
+          {
+            webcamRef: webcamRef,
+            language: language,
+            setActionFinState: setActionFinState,
+
+            isNoUsed: true,
+            handleSetAudioSrc: handleSetAudioSrc,
+            setBlocker: setBlocker,
+          }
+        );
+        for (let schedule of Object.keys(alarmSchedule)) {
+          scheduler_data(
+            alarmSchedule[schedule].value,
+            alarmSchedule[schedule].mode,
+            checkActionByTheme,
+            { ...props, theme: schedule },
+            0
+          );
+        }
+      } catch (error) {
+        console.error("There was a problem with the fetch operation:", error);
+      }
+    } else if (imageSrc && running && !blocker && mode === "monotone") {
+      try {
+        await checkActionByTheme({
+          webcamRef: webcamRef,
+          setActionFinState: setActionFinState,
+          theme: "drinking",
+          isNoUsed: true,
+          language: language,
+          setBlocker: setBlocker,
+          handleSetAudioSrc: handleSetAudioSrc,
+        });
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        await checkActionByTheme({
+          webcamRef: webcamRef,
+          setActionFinState: setActionFinState,
+          theme: "smoking",
+          isNoUsed: false,
+          language: language,
+          setBlocker: setBlocker,
+          handleSetAudioSrc: handleSetAudioSrc,
+        });
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        await checkActionByTheme({
+          webcamRef: webcamRef,
+          setActionFinState: setActionFinState,
+          theme: "agitated",
+          isNoUsed: false,
+          language: language,
+          setBlocker: setBlocker,
+          handleSetAudioSrc: handleSetAudioSrc,
+        });
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        await checkActionByTheme({
+          webcamRef: webcamRef,
+          setActionFinState: setActionFinState,
+          theme: "laughing",
+          isNoUsed: false,
+          language: language,
+          setBlocker: setBlocker,
+          handleSetAudioSrc: handleSetAudioSrc,
+        });
         await new Promise((resolve) => setTimeout(resolve, 2000));
       } catch (error) {
         console.error("There was a problem with the fetch operation:", error);
